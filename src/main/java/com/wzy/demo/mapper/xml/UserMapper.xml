@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzy.demo.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wzy.demo.entity.User">
+        <id column="account" property="account" />
+        <result column="nickname" property="nickname" />
+        <result column="password" property="password" />
+        <result column="address" property="address" />
+        <result column="sex" property="sex" />
+        <result column="merchant" property="merchant" />
+        <result column="type" property="type" />
+        <result column="avatarpath" property="avatarpath" />
+        <result column="salt" property="salt" />
+        <result column="available" property="available" />
+        <result column="gold" property="gold" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,31 @@
+spring:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/sport_goods?serverTimezone=UTC&useSSL=false
+    username: root
+    password: 135223  
+    druid:
+      max-active: 20
+      max-wait: 5000
+      initial-size: 1
+      validation-query: SELECT 'X'   #验证连接
+      enable: true
+
+
+#配置mybatisplus
+mybatis-plus:
+  mapper-locations: classpath*:com/wzy/demo/mapper/xml/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info
+
+server:
+  port: 8888
