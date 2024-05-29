@@ -1,6 +1,6 @@
 package com.wzy.demo.mapper;
 
-import com.wzy.demo.entity.User;
+import com.wzy.demo.entity.RolePermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author wzy
- * @since 2024-05-28
+ * @since 2024-05-29
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface RolePermissionMapper extends BaseMapper<RolePermission> {
 
 }

@@ -4,17 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.wzy.demo.entity.User">
-        <id column="account" property="account" />
-        <result column="nickname" property="nickname" />
+        <id column="id" property="id" />
+        <result column="account" property="account" />
+        <result column="name" property="name" />
         <result column="password" property="password" />
-        <result column="address" property="address" />
-        <result column="sex" property="sex" />
-        <result column="merchant" property="merchant" />
-        <result column="type" property="type" />
-        <result column="avatarpath" property="avatarpath" />
         <result column="salt" property="salt" />
-        <result column="available" property="available" />
-        <result column="gold" property="gold" />
+        <result column="sex" property="sex" />
+        <result column="age" property="age" />
+        <result column="the_type" property="theType" />
     </resultMap>
 
 </mapper>

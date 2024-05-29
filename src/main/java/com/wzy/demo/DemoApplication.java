@@ -8,13 +8,15 @@ import org.springframework.util.unit.DataSize;
 
 import jakarta.servlet.MultipartConfigElement;
 
+
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+
 @SpringBootApplication
 @MapperScan(basePackages = {"com.wzy.demo.mapper"})
-public class SportgoodsApplication {
+public class DemoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SportgoodsApplication.class, args);
+		SpringApplication.run(DemoApplication.class, args);
 	}
 	@Bean
 	public MultipartConfigElement multipartConfigElement() {

@@ -2,7 +2,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/sport_goods?serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false
     username: root
     password: 135223  
     druid:
@@ -11,6 +11,7 @@ spring:
       initial-size: 1
       validation-query: SELECT 'X'   #验证连接
       enable: true
+
 
 
 #配置mybatisplus
@@ -26,6 +27,56 @@ mybatis-plus:
 logging:
   level:
     root: info
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+
+knife4j:
+  ## 是否为生产环境(false为可以访问接口文档地址，true为不可访问接口文档地址)
+  production: false
+  # 是否使用knife4j的增强功能
+  enable: true
+  setting:
+    swagger-model-name: 实体类列表
+    # 是否自定义底部栏
+    enable-footer-custom: true
+    # 自定义底部栏内容
+    footer-custom-content: spb3_demo
+    # 针对RequestMapping的接口请求类型,在不指定参数类型的情况下,如果不过滤,默认会显示7个类型的接口地址参数,如果开启此配置,默认展示一个Post类型的接口地址
+    enable-filter-multipart-apis: true
+    # 具体接口的过滤类型
+    enable-filter-multipart-api-method-type: GET
+
+shiro:
+  hash-algorithm-name: md5
+  hash-iterations: 2
+  anon-urls:
+  - /index.html*
+  - /sys/index
+  - /file/**
+  - /sys/toLogin*
+  - /sys/toRegister*
+  - /role/getAllRoles*
+  - /user/register*
+  - /login/login
+  - /login/getCode
+  - /sys/goodsShop*
+  - /sys/goodDetail**
+  - /goods/loadAllGoods*
+  - /userGoods/getSales
+  - /resources/**
+  - /carousel/getCarousel
+  - /notice/getNotice
+  - /user/getUserBasicByAccount
+  - /comments/loadAllComment
+  login-url: /sys/toLogin
+  log-out-url: /login/logout*
+  authc-urls:
+  - /**
 
 server:
   port: 8888
