@@ -23,9 +23,7 @@ public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("user_id")
     private Integer userId;
 
-    @TableId("role_id")
     private Integer roleId;
 }

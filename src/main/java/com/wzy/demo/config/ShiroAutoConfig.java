@@ -23,20 +23,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import com.wzy.demo.common.Constast;
-import com.wzy.demo.realme.UserRealm;
+import com.wzy.demo.realm.UserRealm;
+
 import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "shiro")
 @Data
 public class ShiroAutoConfig {
-    private static final String SHIRO_DIALECT = "shiroDialect";
+
     private static final String SHIRO_FILTER = "shiroFilter";
     // 加密方式
     private String hashAlgorithmName = "md5";
     // 散列次数
     private int hashIterations = Constast.HASHITERATIONS;
     private String loginUrl = "/index.html";
-
+    private final Logger logger = LoggerFactory.getLogger(MySessionListener.class);
     private String[] anonUrls;
     private String logOutUrl;
     private String[] authcUrls;
@@ -59,7 +60,7 @@ public class ShiroAutoConfig {
     }
 
     public class MySessionListener extends SessionListenerAdapter {
-        private final Logger logger = LoggerFactory.getLogger(MySessionListener.class);
+
         @Override
         public void onStop(org.apache.shiro.session.Session session) {
             // 在会话停止时执行注销后台内容的操作，可以根据需要调用相应的服务或方法
@@ -110,7 +111,7 @@ public class ShiroAutoConfig {
                 filterChainDefinitionMap.put(authc, "authc");
             }
         }
-        
+
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return factoryBean;
     }

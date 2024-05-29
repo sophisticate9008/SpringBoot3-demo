@@ -1,4 +1,4 @@
-package com.wzy.demo.realme;
+package com.wzy.demo.realm;
 
 import java.util.ArrayList;
 import java.util.Arrays;

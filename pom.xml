@@ -121,6 +121,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- 配置元 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
         
 	</dependencies>
 

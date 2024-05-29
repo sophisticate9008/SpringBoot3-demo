@@ -16,13 +16,15 @@ spring:
 
 #配置mybatisplus
 mybatis-plus:
-  mapper-locations: classpath*:com/wzy/demo/mapper/xml/*Mapper.xml
+  mapper-locations: classpath:/mapper/*.xml
+
   global-config:
     db-config:
       id-type: auto
   configuration:
     # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 
 logging:
   level:
@@ -55,28 +57,16 @@ shiro:
   hash-algorithm-name: md5
   hash-iterations: 2
   anon-urls:
-  - /index.html*
-  - /sys/index
-  - /file/**
-  - /sys/toLogin*
-  - /sys/toRegister*
-  - /role/getAllRoles*
-  - /user/register*
-  - /login/login
-  - /login/getCode
-  - /sys/goodsShop*
-  - /sys/goodDetail**
-  - /goods/loadAllGoods*
-  - /userGoods/getSales
-  - /resources/**
-  - /carousel/getCarousel
-  - /notice/getNotice
-  - /user/getUserBasicByAccount
-  - /comments/loadAllComment
+    - /doc.html**
+    - /webjars/**/**
+    - /swagger-resources/**
+    - /v2/**
+    - /v3/**
+    - /resources/**
   login-url: /sys/toLogin
   log-out-url: /login/logout*
   authc-urls:
-  - /**
+    - /**
 
 server:
   port: 8888
