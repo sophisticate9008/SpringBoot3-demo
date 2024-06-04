@@ -30,11 +30,11 @@ public class OpenApiConfig {
                                 .url("http://doc.xiaominfo.com")));
     }
     @Bean
-    public GroupedOpenApi allEntities() {
+    public GroupedOpenApi allApi() {
         return GroupedOpenApi.builder()
                 .packagesToScan("com.wzy.demo.controller", "com.wzy.demo.entity")
                 .group("all")
-                .pathsToMatch("/api/**")
+                .pathsToMatch("/**/**")
                 .build();
     }
 }

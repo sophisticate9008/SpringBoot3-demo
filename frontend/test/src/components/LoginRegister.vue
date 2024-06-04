@@ -8,12 +8,14 @@
       <h2>Login</h2>
       <form @submit.prevent="handleLogin">
         <div>
-          <label for="login-email">Email:</label>
-          <input type="email" v-model="loginEmail" required />
+          <el-input type="Account" v-model="loginAccount" placeholder="Account" required clearable/>
         </div>
         <div>
-          <label for="login-password">Password:</label>
-          <input type="password" v-model="loginPassword" required />
+          <el-input type="password" v-model="loginPassword" placeholder="Password" required clearable/>
+        </div>
+        <div class="verification-code-container">
+          <el-input type="code" v-model="loginCode" placeholder="Code" required clearable/>
+          <img :src="verificationCodeUrl" @click="refreshVerificationCode" alt="verification code" class="verification-code"/>
         </div>
         <button type="submit">Login</button>
       </form>
@@ -22,16 +24,13 @@
       <h2>Register</h2>
       <form @submit.prevent="handleRegister">
         <div>
-          <label for="register-email">Email:</label>
-          <input type="email" v-model="registerEmail" required />
+          <el-input type="Account" v-model="registerAccount" placeholder="Account" required clearable/>
         </div>
         <div>
-          <label for="register-password">Password:</label>
-          <input type="password" v-model="registerPassword" required />
+          <el-input v-model="registerPassword" type="password" placeholder="Password" required clearable/>
         </div>
         <div>
-          <label for="register-confirm-password">Confirm Password:</label>
-          <input type="password" v-model="registerConfirmPassword" required />
+          <el-input type="password" v-model="registerConfirmPassword" placeholder="Confirm Password" required clearable/>
         </div>
         <button type="submit">Register</button>
       </form>
@@ -40,34 +39,44 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'LoginRegister',
   data() {
     return {
       activeTab: 'login',
-      loginEmail: '',
+      loginAccount: '',
       loginPassword: '',
-      registerEmail: '',
+      registerAccount: '',
       registerPassword: '',
-      registerConfirmPassword: ''
+      registerConfirmPassword: '',
+      loginCode: '',
+      verificationCodeUrl: 'http://localhost:8888/login/getCode'
     };
   },
   methods: {
     handleLogin() {
-      // 模拟登录逻辑
-      if (this.loginEmail && this.loginPassword) {
-        alert(`Logging in with email: ${this.loginEmail}`);
-        // 这里添加实际的登录逻辑
-      }
+        axios.post("/login/login", {
+            account: this.loginAccount,
+            password: this.loginPassword,
+            code: this.loginCode
+        }).then(response => {
+            this.$message(response.data.msg);
+        });
+
     },
     handleRegister() {
       // 模拟注册逻辑
-      if (this.registerEmail && this.registerPassword && this.registerPassword === this.registerConfirmPassword) {
-        alert(`Registering with email: ${this.registerEmail}`);
+      if (this.registerAccount && this.registerPassword && this.registerPassword === this.registerConfirmPassword) {
+        alert(`Registering with Account: ${this.registerAccount}`);
         // 这里添加实际的注册逻辑
       } else {
         alert('Passwords do not match');
       }
+    },
+    refreshVerificationCode() {
+      // 更新验证码图片的 URL 以强制刷新
+      this.verificationCodeUrl = this.verificationCodeUrl + `?timestamp=${new Date().getTime()}`;
     }
   }
 };
@@ -104,20 +113,24 @@ export default {
 form {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 form div {
-  margin-bottom: 10px;
-}
-
-form label {
+  width: 300px;
   margin-bottom: 5px;
 }
 
-form input {
-  padding: 8px;
-  border: 1px solid #ccc;
+.verification-code-container {
+  display: flex;
+  align-items: center;
+}
+
+.verification-code {
+  margin-left: 10px;
+  height: 32px;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 button[type="submit"] {
@@ -127,6 +140,7 @@ button[type="submit"] {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  width: 300px;
 }
 
 button[type="submit"]:hover {

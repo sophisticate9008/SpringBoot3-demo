@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -21,6 +22,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 @TableName("user")
 @Schema(name = "User", description = "用户表")
 public class User implements Serializable {
@@ -56,5 +58,5 @@ public class User implements Serializable {
 
     @Schema(name = "theType", description = "类型", example = "1", required = true)
     @TableField("the_type")
-    private Integer theType;
+    private Integer theType = 1;
 }

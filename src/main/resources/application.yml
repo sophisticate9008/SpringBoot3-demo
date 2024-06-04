@@ -54,7 +54,7 @@ knife4j:
     enable-filter-multipart-api-method-type: GET
 
 shiro:
-  hash-algorithm-name: md5
+  hash-algorithm-name: SHA-256
   hash-iterations: 2
   anon-urls:
     - /doc.html**
@@ -63,7 +63,9 @@ shiro:
     - /v2/**
     - /v3/**
     - /resources/**
-  login-url: /sys/toLogin
+    - /login/**
+    - /user/register
+  login-url: /login/login*
   log-out-url: /login/logout*
   authc-urls:
     - /**

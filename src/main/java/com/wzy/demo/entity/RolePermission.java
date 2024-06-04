@@ -6,6 +6,7 @@ import java.io.Serializable;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -18,6 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("role_permission")
+@Accessors(chain = true)
 @Schema(name = "RolePermission", description = "")
 public class RolePermission implements Serializable {
 

@@ -33,7 +33,7 @@ public class ShiroAutoConfig {
 
     private static final String SHIRO_FILTER = "shiroFilter";
     // 加密方式
-    private String hashAlgorithmName = "md5";
+    private String hashAlgorithmName = Constast.AlgorithmName;
     // 散列次数
     private int hashIterations = Constast.HASHITERATIONS;
     private String loginUrl = "/index.html";
@@ -68,6 +68,7 @@ public class ShiroAutoConfig {
             // 调用后台注销方法，例如清除缓存、关闭连接等
         }
     }
+    
     /**
      * 声明凭证匹配器
      */
@@ -77,6 +78,16 @@ public class ShiroAutoConfig {
         credentialsMatcher.setHashAlgorithmName(hashAlgorithmName);
         credentialsMatcher.setHashIterations(hashIterations);
         return credentialsMatcher;
+    }
+    /**
+     * 声明userRealm
+     */
+    @Bean("userRealm")
+    public UserRealm userRealm(CredentialsMatcher credentialsMatcher) {
+        UserRealm userRealm = new UserRealm();
+        // 注入凭证匹配器
+        userRealm.setCredentialsMatcher(credentialsMatcher);
+        return userRealm;
     }
 
     @Bean("securityManager")

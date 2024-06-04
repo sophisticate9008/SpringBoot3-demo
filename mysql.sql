@@ -1,13 +1,14 @@
-CREATE TABLE user (
-    id INT NOT NULL AUTO_INCREMENT,
-    account VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    salt VARCHAR(255) NOT NULL,
-    sex TINYINT NOT NULL,
-    age TINYINT NOT NULL,
-    the_type TINYINT NOT NULL,
-    PRIMARY KEY (id)
+CREATE TABLE `user` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `account` VARCHAR(255) UNIQUE NOT NULL,
+    `name` VARCHAR(255),
+    `password` VARCHAR(255) NOT NULL,
+    `salt` VARCHAR(255) NOT NULL,
+    `sex` TINYINT,
+    `age` TINYINT,
+    `the_type` TINYINT NOT NULL,
+    `state` TINYINT NOT NULL,
+    PRIMARY KEY (`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE role (
