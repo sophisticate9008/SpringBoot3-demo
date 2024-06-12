@@ -1,6 +1,6 @@
 package com.wzy.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import io.swagger.v3.oas.annotations.media.Schema;

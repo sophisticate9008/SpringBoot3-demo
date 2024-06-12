@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzy.demo.mapper.ReplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wzy.demo.entity.Reply">
+        <id column="id" property="id" />
+        <result column="content" property="content" />
+        <result column="account" property="account" />
+        <result column="commission_id" property="commissionId" />
+        <result column="reply_time" property="replyTime" />
+        <result column="state" property="state" />
+    </resultMap>
+
+</mapper>

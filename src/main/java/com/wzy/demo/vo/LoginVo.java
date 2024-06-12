@@ -7,8 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-@Schema(name = "UserVo", description = "登陆注册用")
-public class UserVo{
+@Schema(name = "LoginVo", description = "登陆注册用")
+public class LoginVo{
+    
     @Schema(description = "账户")
     String account;
 

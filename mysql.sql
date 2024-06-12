@@ -8,6 +8,9 @@ CREATE TABLE `user` (
     `age` TINYINT,
     `the_type` TINYINT NOT NULL,
     `state` TINYINT NOT NULL,
+    `avatar_path` VARCHAR(255) DEFAULT NULL,
+    `phone` VARCHAR(50) DEFAULT NULL,
+    `email` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -40,3 +43,29 @@ CREATE TABLE role_permission (
     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
     FOREIGN KEY (permission_id) REFERENCES permission(id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE commission (
+    id INT NOT NULL AUTO_INCREMENT,
+    account VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description VARCHAR(2000),
+    begin_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_time DATETIME NOT NULL,
+    money DECIMAL(10, 2) NOT NULL,
+    state TINYINT NOT NULL,
+    num INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE reply(
+    id INT NOT NULL AUTO_INCREMENT,
+    content VARCHAR(2000) NOT NULL,
+    account VARCHAR(255) NOT NULL,
+    commission_id INT NOT NULL,
+    reply_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    state TINYINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE,
+    FOREIGN KEY (commission_id) REFERENCES commission(id) ON DELETE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
