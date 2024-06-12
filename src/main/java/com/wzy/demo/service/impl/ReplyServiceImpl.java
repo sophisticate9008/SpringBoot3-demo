@@ -8,6 +8,8 @@ import com.wzy.demo.service.ReplyService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,7 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
             return false;
         }else {
             Commission commission = commissionService.getById(reply.getCommissionId());
-            if(commission.getState() == 0){
+            if(commission.getState() == 0 && commission.getEndTime().isAfter(LocalDateTime.now())){
                 reply.setState(0);
                 if(this.save(reply)) {
                     if(commissionService.getCommissionNum(reply.getCommissionId()) >= commission.getNum()) {

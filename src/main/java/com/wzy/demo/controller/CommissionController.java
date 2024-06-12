@@ -35,6 +35,7 @@ public class CommissionController {
     public ResultObj add(@RequestBody Commission commission) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         if (commission.getAccount().equals(activUser.getAccount())) {
+            commission.setState(0);
             return commissionService.save(commission) ? ResultObj.ADD_SUCCESS : ResultObj.ADD_ERROR;
         } else {
             return ResultObj.Permission_Exceed;

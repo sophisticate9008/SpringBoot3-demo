@@ -6,11 +6,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
+import com.wzy.demo.entity.Commission;
 import com.wzy.demo.entity.Reply;
 import com.wzy.demo.entity.User;
+import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.service.ReplyService;
 
 import io.swagger.v3.oas.annotations.Operation;
+
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +37,9 @@ public class ReplyController {
 
     @Autowired
     private ReplyService replyService;
+
+    @Autowired
+    private CommissionService commissionService;
     @GetMapping("lock")
     @ResponseBody
     @Operation(summary = "锁定委托", description = "锁定委托")
@@ -61,6 +68,11 @@ public class ReplyController {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         if(!entity.getAccount().equals(activUser.getAccount())) {
             return ResultObj.Permission_Exceed;
+        }
+        Commission commission = commissionService.getById(entity.getCommissionId());
+        entity.setReplyTime(LocalDateTime.now());
+        if(commission.getEndTime().isBefore(entity.getReplyTime())) {
+            return ResultObj.UPDATE_ERROR.addOther("该委托已结束");
         }
         entity.setState(0);
         return replyService.updateById(entity) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
