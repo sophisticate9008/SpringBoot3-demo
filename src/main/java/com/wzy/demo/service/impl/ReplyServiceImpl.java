@@ -26,37 +26,55 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
 
     @Autowired
     private CommissionService commissionService;
+
     @Override
-    public boolean canceled(String account, Integer id) {
+    public boolean canceled(String account, Integer commissionId) {
         QueryWrapper<Reply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("account", account).eq("commission_id", id).eq("state", -2);
-        if(this.getOne(queryWrapper) != null) {
+        queryWrapper.eq("account", account).eq("commission_id", commissionId).eq("state", -2);
+        if (this.getOne(queryWrapper) != null) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
     @Override
     public boolean add(Reply reply) {
-        if(this.canceled(reply.getAccount(), reply.getCommissionId())){
+        if (this.canceled(reply.getAccount(), reply.getCommissionId())) {
             return false;
-        }else {
+        } else {
             Commission commission = commissionService.getById(reply.getCommissionId());
-            if(commission.getState() == 0 && commission.getEndTime().isAfter(LocalDateTime.now())){
-                reply.setState(0);
-                if(this.save(reply)) {
-                    if(commissionService.getCommissionNum(reply.getCommissionId()) >= commission.getNum()) {
-                        commission.setState(2);
-                        commissionService.updateById(commission);
+            if (commission.getState() == 0  && commission.getEndTime().isAfter(LocalDateTime.now())) {
+                if (commissionService.getAndSetCommissionNum(reply.getCommissionId()) < commission.getNum()) {
+                    reply.setState(0);
+                    if(this.save(reply)) {
+                        commissionService.getAndSetCommissionNum(reply.getCommissionId());
+                        return true;
                     }
-                    return true;
                 }
-                return false;
-            }else {
-                return false;
             }
+            return false;
         }
     }
 
+    @Override
+    public boolean unlock(Integer replyId) {
+        return setState(replyId, -2);
+    }
+
+    @Override
+    public boolean apply(Integer replyId) {
+        return setState(replyId, 1);
+    }
+
+    @Override
+    public boolean reject(Integer replyId) {
+        return setState(replyId, 2);
+    }
+
+    public boolean setState(Integer replyId, Integer state) {
+        Reply reply = this.getById(replyId);
+        reply.setState(state);
+        return this.updateById(reply);
+    }
 }

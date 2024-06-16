@@ -47,13 +47,14 @@ CREATE TABLE role_permission (
 CREATE TABLE commission (
     id INT NOT NULL AUTO_INCREMENT,
     account VARCHAR(255) NOT NULL,
-    name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description VARCHAR(2000),
     begin_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     end_time DATETIME NOT NULL,
     money DECIMAL(10, 2) NOT NULL,
     state TINYINT NOT NULL,
     num INT NOT NULL,
+    current_num INT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

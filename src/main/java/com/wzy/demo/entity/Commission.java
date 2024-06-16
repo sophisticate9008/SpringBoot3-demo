@@ -63,6 +63,11 @@ public class Commission implements Serializable {
     @TableField("num")
     private Integer num;
 
+    @Schema(name= "currentNUm", description = "当前结果数量")
+    @Hidden
+    @TableField("current_num")
+    private Integer currentNum;
+
     @Schema(name = "state", description = "委托状态(-1:委托终止, 0:委托进行, 1:委托完成, 2:委托已满)")
     @Hidden
     @TableField("state")

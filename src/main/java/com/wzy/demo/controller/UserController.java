@@ -1,25 +1,16 @@
 package com.wzy.demo.controller;
-
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.PasswordUtils;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
 import com.wzy.demo.service.UserService;
-
-import cn.hutool.db.Session;
 import io.swagger.v3.oas.annotations.Operation;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -50,7 +41,7 @@ public class UserController {
         return new DataGridView(user);
     }
 
-    @PostMapping("/register")
+    @GetMapping("/register")
     public ResultObj Register(String account, String password) {
         if(userService.AccountHasRegister(account)) {
             return ResultObj.REGISTER_REPEAT;

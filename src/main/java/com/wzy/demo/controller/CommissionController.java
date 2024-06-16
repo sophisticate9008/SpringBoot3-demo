@@ -1,19 +1,30 @@
 package com.wzy.demo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.Commission;
 import com.wzy.demo.entity.User;
 import com.wzy.demo.service.CommissionService;
+import com.wzy.demo.vo.PageVo;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+
+
 
 /**
  * <p>
@@ -25,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Controller
 @RequestMapping("/commission")
+@ResponseBody
 public class CommissionController {
 
     @Autowired
@@ -65,4 +77,22 @@ public class CommissionController {
         }
         return commissionService.removeById(id) ? ResultObj.DELETE_SUCCESS : ResultObj.DELETE_ERROR;
     }
+
+    @PostMapping("list")
+    @Operation(summary = "获取委托列表", description = "获取委托列表")
+    public DataGridView getList(@RequestBody PageVo pageVo) {
+        int page = pageVo.getPage();
+        int limit = pageVo.getLimit();
+        Page<Commission> pageRequest = new Page<>(page, limit);
+        QueryWrapper<Commission> queryWrapper = new QueryWrapper<>();
+        IPage<Commission> commissionPage = commissionService.getBaseMapper().selectPage(pageRequest, queryWrapper);
+        return new DataGridView(commissionPage.getTotal(), commissionPage.getRecords());
+    }
+
+    @GetMapping("getById")
+    @Operation(summary = "根据id获取委托", description = "根据id获取委托")
+    public DataGridView getById(Integer id) {
+        return new DataGridView(commissionService.getById(id));
+    }
+    
 }

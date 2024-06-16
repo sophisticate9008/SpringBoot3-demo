@@ -12,6 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-06-11
  */
 public interface CommissionService extends IService<Commission> {
-    boolean locked(Integer id);
-    Integer getCommissionNum(Integer id);
+    boolean locked(Integer commissionId);
+    Integer getAndSetCommissionNum(Integer commissionId);
 }

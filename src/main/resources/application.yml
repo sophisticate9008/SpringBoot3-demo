@@ -1,5 +1,6 @@
 spring:
-
+  aop:
+    proxy-target-class: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false
@@ -65,10 +66,11 @@ shiro:
     - /resources/**
     - /login/**
     - /user/register
-  login-url: /login/login*
-  log-out-url: /login/logout*
+    - /commission/list
+    - /commission/getById**
+  login-url: /login/login
+  log-out-url: /login/logout
   authc-urls:
     - /**
-
 server:
   port: 8888

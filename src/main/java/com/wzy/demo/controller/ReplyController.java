@@ -45,11 +45,15 @@ public class ReplyController {
     @Operation(summary = "锁定委托", description = "锁定委托")
     public ResultObj lock(Integer commissionId) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
+        Commission commission = commissionService.getById(commissionId);
+        if(commission.getAccount().equals(activUser.getAccount())) {
+            return ResultObj.LOCK_ERROR.addOther("或不能锁定自己的委托");
+        }
         Reply replyEmpty = new Reply().setAccount(activUser.getAccount()).setContent("锁定委托").setCommissionId(commissionId);
         return replyService.add(replyEmpty) ? ResultObj.LOCK_SUCCESS : ResultObj.LOCK_ERROR;
     }
     
-    @PostMapping("unlock")
+    @GetMapping("unlock")
     @Operation(summary = "取消锁定", description = "取消锁定,之后对此委托失去锁定权")
     @ResponseBody
     public ResultObj unlock(Integer replyId) {
@@ -58,8 +62,8 @@ public class ReplyController {
         if(!entity.getAccount().equals(activUser.getAccount())) {
             return ResultObj.Permission_Exceed;
         }
-        entity.setState(-2);
-        return replyService.updateById(entity) ? ResultObj.UNLOCK_SUCCESS : ResultObj.UNLOCK_ERROR;
+        
+        return replyService.unlock(entity.getId()) ? ResultObj.UNLOCK_SUCCESS : ResultObj.UNLOCK_ERROR;
     }
 
     @PostMapping("update")
