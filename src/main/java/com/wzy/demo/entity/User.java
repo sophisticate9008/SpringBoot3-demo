@@ -76,4 +76,9 @@ public class User implements Serializable {
     @Hidden
     @TableField("the_type")
     private Integer theType = 1;
+
+    @Schema(name = "state", description = "状态", example = "1")
+    @Hidden
+    @TableField("state")
+    private Integer state = 1;
 }

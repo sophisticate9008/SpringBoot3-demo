@@ -72,6 +72,7 @@ public class LoginController {
     }
 
     @GetMapping("isLogin")
+    @Operation(summary = "判断是否登陆", description = "判断是否登陆")
     public ResultObj isLogin() {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         return activUser == null ? ResultObj.LOGIN_ERROR : ResultObj.LOGIN_SUCCESS;

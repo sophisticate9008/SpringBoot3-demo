@@ -31,7 +31,7 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
     public boolean canceled(String account, Integer commissionId) {
         QueryWrapper<Reply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("account", account).eq("commission_id", commissionId).eq("state", -2);
-        if (this.getOne(queryWrapper) != null) {
+        if (this.list(queryWrapper).size() > 0) {
             return true;
         } else {
             return false;
@@ -56,7 +56,7 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
             return false;
         }
     }
-
+    
     @Override
     public boolean unlock(Integer replyId) {
         return setState(replyId, -2);
