@@ -26,11 +26,13 @@ public class ResultObj implements Cloneable{
     public static final ResultObj UPDATE_ERROR = new ResultObj(Constast.ERROR, "修改失败");
     public static final ResultObj DELETE_SUCCESS = new ResultObj(Constast.SUCCESS, "删除成功");
     public static final ResultObj DELETE_ERROR = new ResultObj(Constast.ERROR, "删除失败");
-    public static final ResultObj Permission_Exceed = new ResultObj(Constast.SUCCESS, "越权操作");
+    public static final ResultObj Permission_Exceed = new ResultObj(Constast.ERROR, "越权操作");
     public static final ResultObj LOCK_SUCCESS = new ResultObj(Constast.SUCCESS, "锁定成功");
     public static final ResultObj LOCK_ERROR = new ResultObj(Constast.ERROR, "锁定失败,委托关闭或人数已满或失去锁定权");
     public static final ResultObj UNLOCK_SUCCESS = new ResultObj(Constast.SUCCESS, "解锁成功");
     public static final ResultObj UNLOCK_ERROR = new ResultObj(Constast.ERROR, "解锁失败");
+    public static final ResultObj OPERATION_SUCCESS = new ResultObj(Constast.SUCCESS, "操作成功");
+    public static final ResultObj OPERATION_ERROR = new ResultObj(Constast.ERROR, "操作失败");
     
     public ResultObj addOther(String val) {
         try {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wzy.demo.common.AppFileUtils;
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.PasswordUtils;
 import com.wzy.demo.common.ResultObj;
@@ -70,6 +71,10 @@ public class UserController {
     @PostMapping("/changeProfile")
     public ResultObj changeProfile(@RequestBody User user) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
+        if(user.getAvatarPath() != null && activUser.getAvatarPath() != null && !user.getAvatarPath().equals(activUser.getAvatarPath())) {
+            AppFileUtils.removeFileByPath(activUser.getAvatarPath());
+            user.setAvatarPath(AppFileUtils.renameFile(user.getAvatarPath()));
+        }
         user.setSalt(null).setTheType(null).setPassword(null);
         if(user.getAccount().equals(activUser.getAccount())) {
             user.setId(activUser.getId());

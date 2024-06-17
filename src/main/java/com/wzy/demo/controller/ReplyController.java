@@ -14,7 +14,6 @@ import com.wzy.demo.entity.User;
 import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.service.ReplyService;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.LocalDateTime;
@@ -113,4 +112,29 @@ public class ReplyController {
                 .selectList(new QueryWrapper<Reply>().eq("account", activUser.getAccount())));
     }
 
+    @GetMapping("apply")
+    @Operation(summary = "应用", description = "应用")
+    public ResultObj apply(Integer replyId) {
+        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        Reply entity = replyService.getById(replyId);
+        Commission commission = commissionService.getById(entity.getCommissionId());
+
+        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() < 0) {
+            return ResultObj.Permission_Exceed;
+        }
+        return replyService.apply(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;
+    }
+
+    @GetMapping("reject")
+    @Operation(summary = "拒绝", description = "拒绝")
+    public ResultObj reject(Integer replyId) {
+        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        Reply entity = replyService.getById(replyId);
+        Commission commission = commissionService.getById(entity.getCommissionId());
+
+        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() < 0) {
+            return ResultObj.Permission_Exceed;
+        }
+        return replyService.reject(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;
+    }
 }

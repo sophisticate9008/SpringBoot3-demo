@@ -75,6 +75,9 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
     public boolean setState(Integer replyId, Integer state) {
         Reply reply = this.getById(replyId);
         reply.setState(state);
+        if(state == -2) {
+            reply.setContent("取消锁定");
+        }
         return this.updateById(reply);
     }
 }
