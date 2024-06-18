@@ -44,9 +44,9 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
             return false;
         } else {
             Commission commission = commissionService.getById(reply.getCommissionId());
-            if (commission.getState() == 0  && commission.getEndTime().isAfter(LocalDateTime.now())) {
+            if (commission.getState() == 0  && commission.getEndTime().isAfter(LocalDateTime.now()) && commission.getBeginTime().isBefore(LocalDateTime.now())) {
                 if (commissionService.getAndSetCommissionNum(reply.getCommissionId()) < commission.getNum()) {
-                    reply.setState(0);
+                    reply.setState(-1);
                     if(this.save(reply)) {
                         commissionService.getAndSetCommissionNum(reply.getCommissionId());
                         return true;

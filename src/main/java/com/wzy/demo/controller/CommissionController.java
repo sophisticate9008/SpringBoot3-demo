@@ -17,6 +17,9 @@ import com.wzy.demo.vo.PageVo;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,10 +72,15 @@ public class CommissionController {
         }
     }
 
-    @PostMapping("delete")
-    @Operation(summary = "删除委托", description = "删除委托(被锁定的不可删除)")
+    @GetMapping("delete")
+    @Operation(summary = "删除委托", description = "删除委托(被锁定的得到截止时间才能删除)")
     public ResultObj delete(Integer id) {
-        if (commissionService.locked(id)) {
+        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        Commission commission = commissionService.getById(id);
+        if (!commission.getAccount().equals(activUser.getAccount())) {
+            return ResultObj.Permission_Exceed;
+        }
+        if (commissionService.locked(id) && commission.getEndTime().isAfter(LocalDateTime.now())) {
             return ResultObj.Permission_Exceed.addOther(",委托被锁定");
         }
         return commissionService.removeById(id) ? ResultObj.DELETE_SUCCESS : ResultObj.DELETE_ERROR;
