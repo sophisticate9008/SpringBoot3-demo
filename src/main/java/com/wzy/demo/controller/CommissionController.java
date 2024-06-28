@@ -17,7 +17,7 @@ import com.wzy.demo.vo.PageVo;
 
 import io.swagger.v3.oas.annotations.Operation;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,9 @@ public class CommissionController {
     public ResultObj add(@RequestBody Commission commission) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         if (commission.getAccount().equals(activUser.getAccount())) {
+            if(commission.getEndTime().isBefore(LocalDateTime.now()) || commission.getBeginTime().isAfter(commission.getEndTime())) {
+                return ResultObj.ADD_ERROR.addOther(",委托时间不符合逻辑");
+            }
             commission.setState(0);
             return commissionService.save(commission) ? ResultObj.ADD_SUCCESS : ResultObj.ADD_ERROR;
         } else {

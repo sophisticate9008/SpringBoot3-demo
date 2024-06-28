@@ -64,7 +64,7 @@ public class ShiroAutoConfig {
         @Override
         public void onStop(org.apache.shiro.session.Session session) {
             // 在会话停止时执行注销后台内容的操作，可以根据需要调用相应的服务或方法
-
+            
             // 调用后台注销方法，例如清除缓存、关闭连接等
         }
     }
