@@ -23,8 +23,8 @@ mybatis-plus:
     db-config:
       id-type: auto
   configuration:
-    # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 logging:
@@ -64,7 +64,8 @@ shiro:
     - /v2/**
     - /v3/**
     - /resources/**
-    - /login/**
+    - /login/login
+    - /login/getCode
     - /user/register
     - /commission/list
     - /commission/getById**

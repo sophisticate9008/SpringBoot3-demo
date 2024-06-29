@@ -3,13 +3,16 @@ package com.wzy.demo.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.session.SessionListenerAdapter;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -23,8 +26,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import com.wzy.demo.common.Constast;
+import com.wzy.demo.filter.JwtFilter;
+import com.wzy.demo.realm.JwtRealm;
 import com.wzy.demo.realm.UserRealm;
 
+import jakarta.servlet.Filter;
 import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "shiro")
@@ -41,7 +47,6 @@ public class ShiroAutoConfig {
     private String[] anonUrls;
     private String logOutUrl;
     private String[] authcUrls;
-
     @Bean("sessionManager")
     public DefaultWebSessionManager sessionManager() {
         
@@ -89,11 +94,20 @@ public class ShiroAutoConfig {
         userRealm.setCredentialsMatcher(credentialsMatcher);
         return userRealm;
     }
+    @Bean("jwtRealm")
+    public JwtRealm jwtRealm() {
+        JwtRealm jwtRealm = new JwtRealm();
+        // 注入凭证匹配器
+        jwtRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
+        return jwtRealm;
+    }
 
     @Bean("securityManager")
-    public DefaultWebSecurityManager securityManager(UserRealm userRealm, DefaultWebSessionManager sessionManager) {
+    public DefaultWebSecurityManager securityManager(UserRealm userRealm,JwtRealm jwtRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(userRealm);
+        // 设置 Realm，这里配置了两个 Realm，密码登录 Realm 和 JWT Realm
+        securityManager.setRealms(List.of(userRealm, jwtRealm));
+        // 设置 SessionManager
         securityManager.setSessionManager(sessionManager);
         return securityManager;
     }
@@ -103,6 +117,10 @@ public class ShiroAutoConfig {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
         // 设置安全管理器
         factoryBean.setSecurityManager(securityManager);
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("jwt", new JwtFilter());
+        factoryBean.setFilters(filters);
+
         // 设置未登陆的时要跳转的页面
         factoryBean.setLoginUrl(loginUrl);
         Map<String, String> filterChainDefinitionMap = new HashMap<>();
@@ -119,10 +137,9 @@ public class ShiroAutoConfig {
         // 设置拦截的路径
         if (authcUrls != null && authcUrls.length > 0) {
             for (String authc : authcUrls) {
-                filterChainDefinitionMap.put(authc, "authc");
+                filterChainDefinitionMap.put(authc, "jwt");
             }
         }
-
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return factoryBean;
     }
