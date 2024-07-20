@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CommissionService extends IService<Commission> {
     boolean locked(Integer commissionId);
     Integer getAndSetCommissionNum(Integer commissionId);
+    String htmlStringHandle(String htmlString);
+    String htmlStringHandle(String oldStr, String newStr);
 }

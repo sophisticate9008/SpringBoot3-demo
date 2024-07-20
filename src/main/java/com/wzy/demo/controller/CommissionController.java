@@ -54,6 +54,7 @@ public class CommissionController {
                 return ResultObj.ADD_ERROR.addOther(",委托时间不符合逻辑");
             }
             commission.setState(0);
+            commission.setDescription(commissionService.htmlStringHandle(commission.getDescription()));
             return commissionService.save(commission) ? ResultObj.ADD_SUCCESS : ResultObj.ADD_ERROR;
         } else {
             return ResultObj.Permission_Exceed;
@@ -63,12 +64,13 @@ public class CommissionController {
     @PostMapping("update")
     @Operation(summary = "修改委托", description = "修改委托(有锁定的不可修改)")
     public ResultObj update(@RequestBody Commission commission) {
-
+        Commission theCommission = commissionService.getById(commission.getId());
         User activUser = (User) WebUtils.getSession().getAttribute("user");
-        if (commission.getAccount().equals(activUser.getAccount())) {
+        if (theCommission.getAccount().equals(activUser.getAccount())) {
             if (commissionService.locked(commission.getId())) {
                 return ResultObj.Permission_Exceed.addOther(",委托被锁定");
             }
+            commission.setDescription(commissionService.htmlStringHandle(theCommission.getDescription(), commission.getDescription()));
             return commissionService.updateById(commission) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
         } else {
             return ResultObj.Permission_Exceed;

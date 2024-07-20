@@ -48,7 +48,7 @@ CREATE TABLE commission (
     id INT NOT NULL AUTO_INCREMENT,
     account VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    description VARCHAR(2000),
+    description Text,
     begin_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     end_time DATETIME NOT NULL,
     money DECIMAL(10, 2) NOT NULL,
