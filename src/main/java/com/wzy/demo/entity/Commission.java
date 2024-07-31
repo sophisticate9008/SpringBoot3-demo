@@ -72,4 +72,9 @@ public class Commission implements Serializable {
     @Hidden
     @TableField("state")
     private Integer state;
+
+    public boolean isDead() {
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(endTime);
+    }
 }

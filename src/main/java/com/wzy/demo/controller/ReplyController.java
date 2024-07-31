@@ -63,7 +63,7 @@ public class ReplyController {
     public ResultObj unlock(Integer replyId) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         Reply entity = replyService.getById(replyId);
-        if (!entity.getAccount().equals(activUser.getAccount())) {
+        if (!entity.getAccount().equals(activUser.getAccount()) || entity.getState() != -1) {
             return ResultObj.Permission_Exceed;
         }
 
@@ -74,16 +74,18 @@ public class ReplyController {
     @Operation(summary = "修改", description = "修改")
     public ResultObj update(@RequestBody Reply entity) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
-        if (!entity.getAccount().equals(activUser.getAccount())) {
-            return ResultObj.Permission_Exceed;
+        Reply reply = replyService.getById(entity.getId());
+        reply.setContent(entity.getContent());
+        if (!reply.getAccount().equals(activUser.getAccount()) || (reply.getState() != 0 && reply.getState() != -1)) {
+            return ResultObj.Permission_Exceed.addOther("回复已被操作");
         }
-        Commission commission = commissionService.getById(entity.getCommissionId());
-        entity.setReplyTime(LocalDateTime.now());
-        if (commission.getEndTime().isBefore(entity.getReplyTime())) {
+        Commission commission = commissionService.getById(reply.getCommissionId());
+        reply.setReplyTime(LocalDateTime.now());
+        if (commission.isDead()) {
             return ResultObj.UPDATE_ERROR.addOther("该委托已结束");
         }
-        entity.setState(0);
-        return replyService.updateById(entity) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
+        reply.setState(0);
+        return replyService.updateById(reply) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
     }
 
     @GetMapping("getListByCommissionId")
@@ -118,8 +120,10 @@ public class ReplyController {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         Reply entity = replyService.getById(replyId);
         Commission commission = commissionService.getById(entity.getCommissionId());
-
-        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() < 0) {
+        if(commission.isDead()) {
+            return ResultObj.Permission_Exceed.addOther("该委托已结束");
+        }
+        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() > 0) {
             return ResultObj.Permission_Exceed;
         }
         return replyService.apply(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;
@@ -131,8 +135,10 @@ public class ReplyController {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         Reply entity = replyService.getById(replyId);
         Commission commission = commissionService.getById(entity.getCommissionId());
-
-        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() < 0) {
+        if(commission.isDead()) {
+            return ResultObj.Permission_Exceed.addOther("该委托已结束");
+        }
+        if (!commission.getAccount().equals(activUser.getAccount()) || entity.getState() > 0) {
             return ResultObj.Permission_Exceed;
         }
         return replyService.reject(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;

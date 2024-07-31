@@ -85,7 +85,7 @@ public class CommissionController {
         if (!commission.getAccount().equals(activUser.getAccount())) {
             return ResultObj.Permission_Exceed;
         }
-        if (commissionService.locked(id) && commission.getEndTime().isAfter(LocalDateTime.now())) {
+        if (commissionService.locked(id)) {
             return ResultObj.Permission_Exceed.addOther(",委托被锁定");
         }
         return commissionService.removeById(id) ? ResultObj.DELETE_SUCCESS : ResultObj.DELETE_ERROR;
