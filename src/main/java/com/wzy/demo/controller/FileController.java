@@ -52,7 +52,10 @@ public class FileController {
     }
 
     @RequestMapping("showFileByPath")
-    public Object showFileByPath(String path) {
-        return AppFileUtils.createResponseEntity(path);
+    public Object showFileByPath(String path, String fileName) {
+        if(fileName == null) {
+            fileName = path;
+        }
+        return AppFileUtils.createResponseEntity(path, fileName);
     }
 }

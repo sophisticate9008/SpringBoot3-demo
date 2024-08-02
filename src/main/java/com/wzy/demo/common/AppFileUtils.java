@@ -1,6 +1,7 @@
 package com.wzy.demo.common;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class AppFileUtils {
      * @param path
      * @return
      */
-    public static ResponseEntity<Object> createResponseEntity(String path) {
+    public static ResponseEntity<Object> createResponseEntity(String path, String fileName){
         //1,构造文件对象
         File file=new File(UPLOAD_PATH, path);
         if(file.exists()) {
@@ -45,6 +46,7 @@ public class AppFileUtils {
             HttpHeaders header=new HttpHeaders();
             //封装响应内容类型(APPLICATION_OCTET_STREAM 响应的内容不限定)
             header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            header.setContentDispositionFormData("attachment", fileName);
             //创建ResponseEntity对象
             ResponseEntity<Object> entity= new ResponseEntity<Object>(bytes, header, HttpStatus.CREATED);
             return entity;

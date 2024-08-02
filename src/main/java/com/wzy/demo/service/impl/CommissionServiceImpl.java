@@ -62,7 +62,7 @@ public class CommissionServiceImpl extends ServiceImpl<CommissionMapper, Commiss
     @Override
     public String htmlStringHandle(String htmlString) {
 
-        String regex = "path=([^\\s\"']*?\\.jpg_temp)";
+        String regex = "path=([^\\s\"']*?\\.*_temp)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(htmlString);
         while (matcher.find()) {
@@ -78,7 +78,8 @@ public class CommissionServiceImpl extends ServiceImpl<CommissionMapper, Commiss
         newStr = this.htmlStringHandle(newStr);
         List<String> oldPaths = extractPaths(oldStr);
         List<String> newPaths = extractPaths(newStr);
-        
+        System.out.println(oldPaths);
+        System.out.println(newPaths);
         Set<String> newPathSet = new HashSet<>(newPaths);
         List<String> missingPaths = new ArrayList<>();
         
@@ -94,7 +95,7 @@ public class CommissionServiceImpl extends ServiceImpl<CommissionMapper, Commiss
     }
     private List<String> extractPaths(String html) {
         List<String> paths = new ArrayList<>();
-        String regex = "path=([^\"\\s]+)";
+        String regex = "path=([^\"&\\s]+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(html);
         

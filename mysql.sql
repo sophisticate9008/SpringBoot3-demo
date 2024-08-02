@@ -61,7 +61,7 @@ CREATE TABLE commission (
 
 CREATE TABLE reply(
     id INT NOT NULL AUTO_INCREMENT,
-    content VARCHAR(2000) NOT NULL,
+    content Text,
     account VARCHAR(255) NOT NULL,
     commission_id INT NOT NULL,
     reply_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
