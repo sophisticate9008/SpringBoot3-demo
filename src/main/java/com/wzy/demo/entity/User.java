@@ -81,4 +81,8 @@ public class User implements Serializable {
     @Hidden
     @TableField("state")
     private Integer state = 1;
+
+    @Schema(name = "signature", description = "签名", example = "我是一个签名")
+    @TableField("signature")
+    private String signature;
 }

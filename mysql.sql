@@ -11,6 +11,7 @@ CREATE TABLE `user` (
     `avatar_path` VARCHAR(255) DEFAULT NULL,
     `phone` VARCHAR(50) DEFAULT NULL,
     `email` VARCHAR(255) DEFAULT NULL,
+    `signature` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

@@ -12,6 +12,9 @@ spring:
       initial-size: 1
       validation-query: SELECT 'X'   #验证连接
       enable: true
+  data:
+    redis:
+      port: 6379
 
 
 

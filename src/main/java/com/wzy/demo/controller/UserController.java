@@ -2,6 +2,7 @@ package com.wzy.demo.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzy.demo.common.AppFileUtils;
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.PasswordUtils;
+import com.wzy.demo.common.RedisService;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
@@ -38,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
     @Autowired
     private UserService userService;
-
+    
     @GetMapping("info")
     @Operation(summary = "获取当前登陆用户信息", description = "获取当前登陆用户信息")
     public DataGridView info() {
@@ -96,7 +98,7 @@ public class UserController {
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("account", account);
             User user = userService.getOne(queryWrapper);
-            user.setPassword(null).setSalt(null);
+            user.setPassword(null).setSalt(null).setPhone(null).setEmail(null);
             users.add(user);
         }
         return new DataGridView(users);
