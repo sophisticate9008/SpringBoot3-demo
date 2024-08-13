@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.util.unit.DataSize;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import jakarta.servlet.MultipartConfigElement;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 
+@EnableWebSocket
 @EnableAspectJAutoProxy
 @SpringBootApplication
 @MapperScan(basePackages = {"com.wzy.demo.mapper"})
