@@ -26,9 +26,6 @@ public class WebSocketController {
 
     @Autowired
     private RedisService redisService;
-    @MessageMapping("/init/{uuid}")
-    public void handleConnect(@DestinationVariable String uuid, @Payload String userId) {
-        log.info("接收到用户连接：{}", userId + " > " + uuid);
-        redisService.setValue(userId,uuid );
-    }
+
+    
 }

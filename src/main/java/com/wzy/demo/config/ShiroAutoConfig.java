@@ -20,12 +20,15 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import com.wzy.demo.common.Constast;
+import com.wzy.demo.common.RedisService;
+import com.wzy.demo.entity.User;
 import com.wzy.demo.filter.JwtFilter;
 import com.wzy.demo.realm.JwtRealm;
 import com.wzy.demo.realm.UserRealm;
@@ -47,6 +50,8 @@ public class ShiroAutoConfig {
     private String[] anonUrls;
     private String logOutUrl;
     private String[] authcUrls;
+    @Autowired
+    private RedisService redisService;
     @Bean("sessionManager")
     public DefaultWebSessionManager sessionManager() {
         
@@ -71,6 +76,17 @@ public class ShiroAutoConfig {
             // 在会话停止时执行注销后台内容的操作，可以根据需要调用相应的服务或方法
             
             // 调用后台注销方法，例如清除缓存、关闭连接等
+            User user = (User) session.getAttribute("user");
+            logger.info(user.getAccount() + " > 会话结束执行操作....");
+
+            //销毁uuid
+            try {
+                redisService.deleteValue((String)redisService.getValue(user.getAccount()));
+                redisService.deleteValue(user.getAccount());                
+            }catch (Exception e) {
+            
+            }
+
         }
     }
     
