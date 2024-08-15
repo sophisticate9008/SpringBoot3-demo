@@ -74,7 +74,6 @@ public class JwtFilter extends AuthenticatingFilter {
         String token = getJwtToken(request);
         // 创建 JWT Token 实例
         JwtToken jwtToken = new JwtToken(token);
-        System.out.println("jwtToken:"+token);
         // 提交给 Realm 进行认证
         Subject subject = getSubject(request, response);
         try {

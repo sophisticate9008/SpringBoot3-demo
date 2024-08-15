@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzy.demo.mapper.MessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wzy.demo.entity.Message">
+        <id column="id" property="id" />
+        <result column="content" property="content" />
+        <result column="sender" property="sender" />
+        <result column="receiver" property="receiver" />
+        <result column="haveRead" property="haveRead" />
+        <result column="send_time" property="sendTime" />
+    </resultMap>
+
+</mapper>

@@ -1,37 +1,55 @@
 package com.wzy.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.wzy.demo.common.Constast;
+import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.RedisService;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
-
-import io.swagger.v3.oas.annotations.Operation;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.wzy.demo.service.MessageService;
 
 
-
+/**
+ * <p>
+ *  前端控制器
+ * </p>
+ *
+ * @author wzy
+ * @since 2024-08-15
+ */
 @RestController
 @RequestMapping("/message")
 public class MessageController {
+
+    @Autowired
+    private MessageService messageService;
     
     @Autowired
     private RedisService redisService;
-    @GetMapping("connect")
-    @Operation(description = "初始化websocket的uuid")
-    public ResultObj connect(@RequestBody String uuid) {
+    @GetMapping("loadAll")
+    public DataGridView loadAll() {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
-        redisService.setValue(uuid, activUser.getAccount());
-        redisService.setValue(activUser.getAccount(),uuid );
-        return ResultObj.OPERATION_SUCCESS;
+        return new DataGridView(messageService.getAllList(activUser.getAccount()));
     }
     
+    @GetMapping("initUuid")
+    public ResultObj initUuid(String uuid) {
+        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        redisService.setValue(uuid, activUser.getAccount());
+        redisService.setValue("uuid" + activUser.getAccount(), uuid);
+        return ResultObj.OPERATION_SUCCESS;
+    }
 
+    @GetMapping("changeObserve")
+    public void changeObserve(String theObserved) {
+        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        redisService.setValue(Constast.MESSAGE_FLAG + activUser.getAccount(), theObserved);
+    }
 }

@@ -71,3 +71,15 @@ CREATE TABLE reply(
     FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE,
     FOREIGN KEY (commission_id) REFERENCES commission(id) ON DELETE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE Message(
+    id INT NOT NULL AUTO_INCREMENT,
+    content varchar(2000),
+    sender varchar(255),
+    receiver varchar(255),
+    haveRead BOOLEAN DEFAULT FALSE,
+    send_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY(sender) REFERENCES user(account) ON DELETE CASCADE,
+    FOREIGN KEY(receiver) REFERENCES user(account) ON DELETE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

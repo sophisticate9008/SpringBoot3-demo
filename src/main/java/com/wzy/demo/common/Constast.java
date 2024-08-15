@@ -9,4 +9,5 @@ public class Constast {
     public static final String UPLOAD_PATH = "D:/06.file/upload";
     public static final String SECRET = "token";
     public static final int ACCESS_EXPIRE = 864000; // 1天
+    public static final String MESSAGE_FLAG = "observer:";
 }

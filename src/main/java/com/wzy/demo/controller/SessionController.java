@@ -40,13 +40,13 @@ public class SessionController {
         boolean isFirstRequest = redisService.getValue(redisKey) == null;
 
         if (isFirstRequest) {
-            System.out.println("第一次");
+
             redisService.setValue(redisKey, "yes");
             redisService.setExpire(redisKey, REQUEST_WINDOW);
             relStop(redisKey, session);
             return ResultObj.OPERATION_SUCCESS;
         } else {
-            System.out.println("第二次");
+
             redisService.deleteValue(redisKey);
             return ResultObj.OPERATION_ERROR;
         }
