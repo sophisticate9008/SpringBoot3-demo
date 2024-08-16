@@ -8,6 +8,8 @@ import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import java.util.concurrent.TimeUnit;
 
 import java.util.concurrent.Executors;
@@ -32,21 +34,20 @@ public class SessionController {
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
     @PostMapping("stop")
-    public ResultObj askStop() {
+    public ResultObj askStop(@RequestBody String arg ) {
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         String redisKey = STOP_REQUEST_KEY_PREFIX + activUser.getAccount();
         boolean isFirstRequest = redisService.getValue(redisKey) == null;
 
-        if (isFirstRequest) {
+        if (isFirstRequest && arg.equals("beforeunload")) {
 
             redisService.setValue(redisKey, "yes");
             redisService.setExpire(redisKey, REQUEST_WINDOW);
             relStop(redisKey, session);
             return ResultObj.OPERATION_SUCCESS;
         } else {
-
             redisService.deleteValue(redisKey);
             return ResultObj.OPERATION_ERROR;
         }
