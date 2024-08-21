@@ -51,5 +51,6 @@ public class MessageController {
     public void changeObserve(String theObserved) {
         User activUser = (User) WebUtils.getSession().getAttribute("user");
         redisService.setValue(Constast.MESSAGE_FLAG + activUser.getAccount(), theObserved);
+        messageService.readMessage(theObserved, activUser.getAccount());
     }
 }

@@ -60,4 +60,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
                 ));
     }
 
+    @Override
+    public void readMessage(String sender, String receiver) {
+        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sender", sender).eq("receiver", receiver);
+        queryWrapper.orderByDesc("id").getSqlFirst();
+        Message theMsg = this.baseMapper.selectOne(queryWrapper);
+        theMsg.setHaveRead(true);
+        this.save(theMsg);
+        
+    }
+
 }

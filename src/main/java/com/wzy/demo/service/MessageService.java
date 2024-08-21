@@ -19,4 +19,6 @@ public interface MessageService extends IService<Message> {
     List<Message> getListByUser(String sender, String receiver);
 
     Map<String, List<Message>> getAllList(String account);
+
+    void readMessage(String sender, String receiver);
 }

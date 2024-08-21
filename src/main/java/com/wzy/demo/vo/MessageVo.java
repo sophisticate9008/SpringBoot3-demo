@@ -9,5 +9,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageVo extends Message{
-    private String type;
+
 }
