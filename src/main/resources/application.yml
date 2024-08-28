@@ -14,7 +14,7 @@ spring:
       enable: true
   data:
     redis:
-      port: 6378
+      port: 6377
 
 
 

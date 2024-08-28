@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzy.demo.annotation.InjectUser;
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
@@ -37,19 +38,19 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author wzy
  * @since 2024-06-11
  */
+@InjectUser
 @Controller
 @RequestMapping("/commission")
 @ResponseBody
 public class CommissionController {
-
+    private User activeUser;
     @Autowired
     private CommissionService commissionService;
 
     @PostMapping("add")
     @Operation(summary = "添加委托", description = "添加委托")
     public ResultObj add(@RequestBody Commission commission) {
-        User activUser = (User) WebUtils.getSession().getAttribute("user");
-        if (commission.getAccount().equals(activUser.getAccount())) {
+        if (commission.getAccount().equals(activeUser.getAccount())) {
             if(commission.getEndTime().isBefore(LocalDateTime.now()) || commission.getBeginTime().isAfter(commission.getEndTime())) {
                 return ResultObj.ADD_ERROR.addOther(",委托时间不符合逻辑");
             }
@@ -65,8 +66,8 @@ public class CommissionController {
     @Operation(summary = "修改委托", description = "修改委托(有锁定的不可修改)")
     public ResultObj update(@RequestBody Commission commission) {
         Commission theCommission = commissionService.getById(commission.getId());
-        User activUser = (User) WebUtils.getSession().getAttribute("user");
-        if (theCommission.getAccount().equals(activUser.getAccount())) {
+
+        if (theCommission.getAccount().equals(activeUser.getAccount())) {
             if (commissionService.locked(commission.getId())) {
                 return ResultObj.Permission_Exceed.addOther(",委托被锁定");
             }
@@ -80,9 +81,9 @@ public class CommissionController {
     @GetMapping("delete")
     @Operation(summary = "删除委托", description = "删除委托(被锁定的得到截止时间才能删除)")
     public ResultObj delete(Integer id) {
-        User activUser = (User) WebUtils.getSession().getAttribute("user");
+
         Commission commission = commissionService.getById(id);
-        if (!commission.getAccount().equals(activUser.getAccount())) {
+        if (!commission.getAccount().equals(activeUser.getAccount())) {
             return ResultObj.Permission_Exceed;
         }
         if (commissionService.locked(id)) {

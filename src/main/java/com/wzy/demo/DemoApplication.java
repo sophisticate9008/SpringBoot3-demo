@@ -14,7 +14,7 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 @EnableWebSocket
 @EnableAspectJAutoProxy
 @SpringBootApplication
-@MapperScan(basePackages = {"com.wzy.demo.mapper"})
+@MapperScan(basePackages = {"com.wzy.demo.mapper","com.wzy.demo.aspect"})
 public class DemoApplication {
 
 	public static void main(String[] args) {

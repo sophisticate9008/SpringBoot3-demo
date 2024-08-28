@@ -2,16 +2,17 @@ package com.wzy.demo.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wzy.demo.annotation.InjectUser;
 import com.wzy.demo.common.AppFileUtils;
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.PasswordUtils;
-import com.wzy.demo.common.RedisService;
+
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
@@ -34,18 +35,20 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author wzy
  * @since 2024-05-28
  */
+@InjectUser
 @RestController
 @RequestMapping("/user")
 @Tag(name = "User Controller", description = "APIs related to User entity")
 public class UserController {
+    private User activeUser;
     @Autowired
     private UserService userService;
     
     @GetMapping("info")
     @Operation(summary = "获取当前登陆用户信息", description = "获取当前登陆用户信息")
     public DataGridView info() {
-        User user = (User) WebUtils.getSession().getAttribute("user");
-        user = userService.getById(user.getId());
+       
+        User user = userService.getById(activeUser.getId());
         user.setPassword(null).setSalt(null);
         return new DataGridView(user);
     }
@@ -61,10 +64,10 @@ public class UserController {
     
     @PostMapping("/changePassword")
     public ResultObj changePassword(String oldPassword, String newPassword) {
-        User user = (User) WebUtils.getSession().getAttribute("user");
-        if(PasswordUtils.hashPassword(oldPassword, user.getSalt()).equals(user.getPassword())) {
-            user.setPassword(PasswordUtils.hashPassword(newPassword, user.getSalt()));
-            userService.updateById(user);
+        
+        if(PasswordUtils.hashPassword(oldPassword, activeUser.getSalt()).equals(activeUser.getPassword())) {
+            activeUser.setPassword(PasswordUtils.hashPassword(newPassword, activeUser.getSalt()));
+            userService.updateById(activeUser);
             return ResultObj.UPDATE_SUCCESS;
         }else {
             return ResultObj.UPDATE_ERROR;
@@ -72,14 +75,14 @@ public class UserController {
     }
     @PostMapping("/changeProfile")
     public ResultObj changeProfile(@RequestBody User user) {
-        User activUser = (User) WebUtils.getSession().getAttribute("user");
-        if(user.getAvatarPath() != null && activUser.getAvatarPath() != null && !user.getAvatarPath().equals(activUser.getAvatarPath())) {
-            AppFileUtils.removeFileByPath(activUser.getAvatarPath());
+
+        if(user.getAvatarPath() != null && activeUser.getAvatarPath() != null && !user.getAvatarPath().equals(activeUser.getAvatarPath())) {
+            AppFileUtils.removeFileByPath(activeUser.getAvatarPath());
             user.setAvatarPath(AppFileUtils.renameFile(user.getAvatarPath()));
         }
         user.setSalt(null).setTheType(null).setPassword(null);
-        if(user.getAccount().equals(activUser.getAccount())) {
-            user.setId(activUser.getId());
+        if(user.getAccount().equals(activeUser.getAccount())) {
+            user.setId(activeUser.getId());
             if(userService.updateById(user)) {
                 return ResultObj.UPDATE_SUCCESS;
             }else {

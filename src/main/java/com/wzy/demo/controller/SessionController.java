@@ -3,11 +3,13 @@ package com.wzy.demo.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wzy.demo.annotation.InjectUser;
 import com.wzy.demo.common.RedisService;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.concurrent.TimeUnit;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import java.time.Duration;
 
+
 @RestController
 @RequestMapping("/session")
 public class SessionController {
@@ -33,11 +36,16 @@ public class SessionController {
     private static final Duration DO = Duration.ofSeconds(2);
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
+    
     @PostMapping("stop")
+    @Operation(summary = "清除会话", description = "浏览器关闭窗口时，清除会话")
     public ResultObj askStop(@RequestBody String arg ) {
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
-        User activUser = (User) WebUtils.getSession().getAttribute("user");
+        User activUser = (User) session.getAttribute("user");
+        if(activUser == null) {
+            return ResultObj.OPERATION_ERROR.addOther("未登录");
+        }
         String redisKey = STOP_REQUEST_KEY_PREFIX + activUser.getAccount();
         boolean isFirstRequest = redisService.getValue(redisKey) == null;
 
