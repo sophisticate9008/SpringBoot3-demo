@@ -46,6 +46,10 @@ public class JwtFilter extends AuthenticatingFilter {
             }
             
         }
+        Subject subject = getSubject(request, response);
+        if(subject.isAuthenticated()) {
+            return true;
+        }
         return false;
         
     }

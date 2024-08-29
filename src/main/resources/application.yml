@@ -61,14 +61,14 @@ shiro:
   hash-algorithm-name: SHA-256
   hash-iterations: 2
   anon-urls:
+    - /file/**
     - /doc.html**
     - /webjars/**/**
     - /swagger-resources/**
     - /v2/**
     - /v3/**
     - /resources/**
-    - /login/login
-    - /login/getCode
+    - /login/**
     - /user/register
     - /commission/list
     - /commission/getById**
