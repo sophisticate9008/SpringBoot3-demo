@@ -28,19 +28,24 @@ public class JwtFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        // 始终返回 false，交给 onAccessDenied 处理认证逻辑
         String token = getJwtToken(request);
-        if(token == null) {
-            return true;
+        if(token != null) {
+            try {
+                executeLogin(request, response);
+                return true;
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            
         }
-        Subject subject = getSubject(request, response);
-        return (boolean)subject.isAuthenticated();
+        return true;
+        
     }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         // 执行 JWT 认证逻辑
-        return executeLogin(request, response);
+        return false;
     }
 
     @Override
