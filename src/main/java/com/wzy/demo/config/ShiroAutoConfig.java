@@ -153,7 +153,7 @@ public class ShiroAutoConfig {
         // 设置拦截的路径
         if (authcUrls != null && authcUrls.length > 0) {
             for (String authc : authcUrls) {
-                filterChainDefinitionMap.put(authc, "jwt");
+                filterChainDefinitionMap.put(authc, "jwt" + convertArrayToPermsString(anonUrls));
             }
         }
         factoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -189,7 +189,12 @@ public class ShiroAutoConfig {
         return advisorAutoProxyCreator;
     }
 
-
+    public static String convertArrayToPermsString(String[] array) {
+        // 使用 String.join 方法将数组转换为逗号分隔的字符串
+        String joined = String.join(",", array);
+        // 拼接成所需的格式 perms["item1","item2",...]
+        return "[" + joined + "]";
+    }
 
 
 }

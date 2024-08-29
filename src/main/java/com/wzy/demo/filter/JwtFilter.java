@@ -2,7 +2,10 @@ package com.wzy.demo.filter;
 
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.regex.Pattern;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -28,6 +31,11 @@ public class JwtFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        String[] annoUrls = (String[])((String[])mappedValue);
+        String requestURI = ((HttpServletRequest) request).getRequestURI();
+        if (isAnnoUrl(requestURI, annoUrls)) {
+            return true;
+        }        
         String token = getJwtToken(request);
         if(token != null) {
             try {
@@ -38,13 +46,32 @@ public class JwtFilter extends AuthenticatingFilter {
             }
             
         }
-        return true;
+        return false;
         
     }
-
+    private boolean isAnnoUrl(String requestURI, String[] annoUrls) {
+        for (String urlPattern : annoUrls) {
+            String regex = convertWildcardToRegex(urlPattern);
+            if (Pattern.matches(regex, requestURI)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private String convertWildcardToRegex(String wildcard) {
+        String regex = wildcard
+            .replace("**", ".*")  // 匹配任意字符
+            .replace("*", "[^/]*");  // 匹配单层路径中的任意字符
+        return "^" + regex + "$";
+    }
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         // 执行 JWT 认证逻辑
+        HttpServletResponse httpResponse = WebUtils.toHttp(response);
+        // 设置返回的状态码和消息内容
+        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 未授权
+        httpResponse.setContentType("application/json; charset=UTF-8");
+        httpResponse.getWriter().write("{\"message\": \"需要登录\"}");
         return false;
     }
 
