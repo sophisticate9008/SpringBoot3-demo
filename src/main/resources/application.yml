@@ -6,7 +6,8 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false
     username: root
     password: 135223  
-    druid:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:      
       max-active: 20
       max-wait: 5000
       initial-size: 1
@@ -15,8 +16,33 @@ spring:
   data:
     redis:
       port: 6378
-
-
+  quartz:
+    # 使用数据库存储
+    job-store-type: jdbc
+    # 初始化完成后自动启动调度程序
+    autoStartup: true
+    properties:
+      org:
+        quartz:
+          # 调度器配置
+          scheduler:
+            instanceName: bootQuartzScheduler
+            instanceId: AUTO
+          # 存储配置
+          jobStore:
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: qrtz_
+            isClustered: true
+            misfireThreshold: 12000
+            clusterCheckinInterval: 15000
+            useProperties: false
+          # 线程池配置
+          threadPool:
+            threadNamePrefix: Boot_Job_Pool
+            threadPriority: 5
+            threadCount: 10
+            class: org.quartz.simpl.SimpleThreadPool
 
 #配置mybatisplus
 mybatis-plus:
