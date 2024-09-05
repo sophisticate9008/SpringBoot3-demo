@@ -33,9 +33,7 @@ public class JwtFilter extends AuthenticatingFilter {
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         String[] annoUrls = (String[])((String[])mappedValue);
         String requestURI = ((HttpServletRequest) request).getRequestURI();
-        if (isAnnoUrl(requestURI, annoUrls)) {
-            return true;
-        }        
+     
         String token = getJwtToken(request);
         if(token != null) {
             try {
@@ -46,6 +44,9 @@ public class JwtFilter extends AuthenticatingFilter {
             }
             
         }
+        if (isAnnoUrl(requestURI, annoUrls)) {
+            return true;
+        }           
         Subject subject = getSubject(request, response);
         if(subject.isAuthenticated()) {
             return true;

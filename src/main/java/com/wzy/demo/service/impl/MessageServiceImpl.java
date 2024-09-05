@@ -62,13 +62,24 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     @Override
     public void readMessage(String sender, String receiver) {
+        // 创建查询条件
         QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("sender", sender).eq("receiver", receiver);
-        queryWrapper.orderByDesc("id").getSqlFirst();
+        queryWrapper.eq("sender", sender)
+                .eq("receiver", receiver)
+                .orderByDesc("id").last("LIMIT 1");
+        ;
+
+        // 查询最新的消息
         Message theMsg = this.baseMapper.selectOne(queryWrapper);
-        theMsg.setHaveRead(true);
-        this.save(theMsg);
-        
+
+        // 如果消息存在，更新其状态
+        if (theMsg != null) {
+            theMsg.setHaveRead(true);
+            this.baseMapper.updateById(theMsg); // 使用 updateById 进行更新
+        } else {
+            // 处理未找到消息的情况（可选）
+            System.out.println("Message not found");
+        }
     }
 
 }

@@ -50,7 +50,7 @@ public class WebSocketController {
                 return;
             }
             messageVo.setSendTime(LocalDateTime.now());
-            if (messageVo.getReceiver()
+            if (messageVo.getSender()
                     .equals(redisService.getValue(Constast.MESSAGE_FLAG + messageVo.getReceiver()))) {
                 messageVo.setHaveRead(true);
             }
