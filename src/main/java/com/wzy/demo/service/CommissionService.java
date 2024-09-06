@@ -16,4 +16,7 @@ public interface CommissionService extends IService<Commission> {
     Integer getAndSetCommissionNum(Integer commissionId);
     String htmlStringHandle(String htmlString);
     String htmlStringHandle(String oldStr, String newStr);
+
+    void setCommissionExpiredJob(Commission commission);
+    void setCommissionBeginJob(Commission commission);
 }

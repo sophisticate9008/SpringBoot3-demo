@@ -15,9 +15,7 @@ import com.wzy.demo.entity.User;
 import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.vo.PageVo;
 
-
 import io.swagger.v3.oas.annotations.Operation;
-
 
 import java.time.LocalDateTime;
 
@@ -26,9 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
-
 
 /**
  * <p>
@@ -51,12 +46,21 @@ public class CommissionController {
     @Operation(summary = "添加委托", description = "添加委托")
     public ResultObj add(@RequestBody Commission commission) {
         if (commission.getAccount().equals(activeUser.getAccount())) {
-            if(commission.getEndTime().isBefore(LocalDateTime.now()) || commission.getBeginTime().isAfter(commission.getEndTime())) {
+            if (commission.getEndTime().isBefore(LocalDateTime.now())
+                    || commission.getBeginTime().isAfter(commission.getEndTime())
+                    || commission.getBeginTime().isBefore(LocalDateTime.now())) {
                 return ResultObj.ADD_ERROR.addOther(",委托时间不符合逻辑");
             }
             commission.setState(0);
             commission.setDescription(commissionService.htmlStringHandle(commission.getDescription()));
-            return commissionService.save(commission) ? ResultObj.ADD_SUCCESS : ResultObj.ADD_ERROR;
+            if (commissionService.save(commission)) {
+                commissionService.setCommissionBeginJob(commission);
+                commissionService.setCommissionExpiredJob(commission);
+                return ResultObj.ADD_SUCCESS;
+            } else {
+                return ResultObj.ADD_ERROR;
+            }
+
         } else {
             return ResultObj.Permission_Exceed;
         }
@@ -71,8 +75,9 @@ public class CommissionController {
             if (commissionService.locked(commission.getId())) {
                 return ResultObj.Permission_Exceed.addOther(",委托被锁定");
             }
-            commission.setDescription(commissionService.htmlStringHandle(theCommission.getDescription(), commission.getDescription()));
-            return commissionService.updateById(commission) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
+            theCommission.setDescription(
+                    commissionService.htmlStringHandle(theCommission.getDescription(), commission.getDescription()));
+            return commissionService.updateById(theCommission) ? ResultObj.UPDATE_SUCCESS : ResultObj.UPDATE_ERROR;
         } else {
             return ResultObj.Permission_Exceed;
         }
@@ -108,5 +113,5 @@ public class CommissionController {
     public DataGridView getById(Integer id) {
         return new DataGridView(commissionService.getById(id));
     }
-    
+
 }
