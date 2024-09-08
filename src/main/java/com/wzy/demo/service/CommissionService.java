@@ -1,6 +1,11 @@
 package com.wzy.demo.service;
 
 import com.wzy.demo.entity.Commission;
+import com.wzy.demo.entity.Reply;
+
+
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -16,4 +21,9 @@ public interface CommissionService extends IService<Commission> {
     Integer getAndSetCommissionNum(Integer commissionId);
     String htmlStringHandle(String htmlString);
     String htmlStringHandle(String oldStr, String newStr);
+
+    void setCommissionExpiredJob(Commission commission);
+    void setCommissionBeginJob(Commission commission);
+
+    List<Reply> getApplyReplys(Integer commissionId);
 }

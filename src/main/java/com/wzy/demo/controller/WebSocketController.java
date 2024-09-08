@@ -46,19 +46,19 @@ public class WebSocketController {
             MessageVo messageVo = objectMapper.readValue(message, MessageVo.class);
             //判断是否是本人发起的消息
             if (redisService.getValue(uuid) == null
-                    || !((String) redisService.getValue(uuid)).equals(messageVo.getSender())) {
+                    || ((Integer) redisService.getValue(uuid)) != messageVo.getSenderId()) {
                 return;
             }
             messageVo.setSendTime(LocalDateTime.now());
-            if (messageVo.getSender()
-                    .equals(redisService.getValue(Constast.MESSAGE_FLAG + messageVo.getReceiver()))) {
+            if (messageVo.getSenderId()
+                    .equals(redisService.getValue(Constast.MESSAGE_FLAG + messageVo.getReceiverId()))) {
                 messageVo.setHaveRead(true);
             }
             messageService.save(messageVo);
             String messageStr = objectMapper.writeValueAsString(messageVo);
             messagingTemplate.convertAndSend(
-                    "/topic/messages/" + redisService.getValue("uuid" + messageVo.getReceiver()), messageStr);
-            messagingTemplate.convertAndSend("/topic/messages/" + redisService.getValue("uuid" + messageVo.getSender()), messageStr);
+                    "/topic/messages/" + redisService.getValue("uuid" + messageVo.getReceiverId()), messageStr);
+            messagingTemplate.convertAndSend("/topic/messages/" + redisService.getValue("uuid" + messageVo.getSenderId()), messageStr);
         } catch (Exception e) {
             log.error("发送消息失败", e);
         }

@@ -7,6 +7,9 @@ import com.wzy.demo.mapper.UserMapper;
 import com.wzy.demo.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,5 +43,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return ResultObj.REGISTER_ERROR;
         }
     }
+
 
 }

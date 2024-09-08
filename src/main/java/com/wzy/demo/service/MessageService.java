@@ -16,9 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-08-15
  */
 public interface MessageService extends IService<Message> {
-    List<Message> getListByUser(String sender, String receiver);
+    List<Message> getListByUser(Integer senderId, Integer receiverId);
 
-    Map<String, List<Message>> getAllList(String account);
+    Map<Integer, List<Message>> getAllList(Integer userId);
 
-    void readMessage(String sender, String receiver);
+    void readMessage(Integer senderId, Integer receiverId);
 }

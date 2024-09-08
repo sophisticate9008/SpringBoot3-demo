@@ -51,10 +51,10 @@ public class ReplyController {
     public ResultObj lock(Integer commissionId) {
 
         Commission commission = commissionService.getById(commissionId);
-        if (commission.getAccount().equals(activeUser.getAccount())) {
+        if (commission.getUserId() == activeUser.getId()) {
             return ResultObj.LOCK_ERROR.addOther("或不能锁定自己的委托");
         }
-        Reply replyEmpty = new Reply().setAccount(activeUser.getAccount()).setContent("锁定委托")
+        Reply replyEmpty = new Reply().setUserId(activeUser.getId()).setContent("锁定委托")
                 .setCommissionId(commissionId);
         return replyService.add(replyEmpty) ? ResultObj.LOCK_SUCCESS : ResultObj.LOCK_ERROR;
     }
@@ -64,7 +64,7 @@ public class ReplyController {
     @ResponseBody
     public ResultObj unlock(Integer replyId) {
         Reply entity = replyService.getById(replyId);
-        if (!entity.getAccount().equals(activeUser.getAccount()) || entity.getState() != -1) {
+        if (entity.getUserId() != activeUser.getId() || entity.getState() != -1) {
             return ResultObj.Permission_Exceed;
         }
 
@@ -77,7 +77,7 @@ public class ReplyController {
 
         Reply reply = replyService.getById(entity.getId());
         reply.setContent(entity.getContent());
-        if (!reply.getAccount().equals(activeUser.getAccount()) || (reply.getState() != 0 && reply.getState() != -1)) {
+        if (reply.getUserId() != activeUser.getId() || (reply.getState() != 0 && reply.getState() != -1)) {
             return ResultObj.Permission_Exceed.addOther("回复已被操作");
         }
         Commission commission = commissionService.getById(reply.getCommissionId());
@@ -95,14 +95,14 @@ public class ReplyController {
 
         if (isOwner) {
             Commission commission = commissionService.getById(commissionId);
-            if (!commission.getAccount().equals(activeUser.getAccount())) {
+            if (commission.getUserId() != activeUser.getId()) {
                 return new DataGridView(-1, "无权限");
             }
             QueryWrapper<Reply> wrapper = new QueryWrapper<Reply>().eq("commission_id", commissionId);
             return new DataGridView(replyService.getBaseMapper().selectList(wrapper));
         } else {
-            QueryWrapper<Reply> wrapper = new QueryWrapper<Reply>().eq("commission_id", commissionId).eq("account",
-                    activeUser.getAccount());
+            QueryWrapper<Reply> wrapper = new QueryWrapper<Reply>().eq("commission_id", commissionId).eq("user_id",
+                    activeUser.getId());
             return new DataGridView(replyService.getBaseMapper().selectList(wrapper));
         }
     }
@@ -112,7 +112,7 @@ public class ReplyController {
     public DataGridView getListByUser() {
 
         return new DataGridView(replyService.getBaseMapper()
-                .selectList(new QueryWrapper<Reply>().eq("account", activeUser.getAccount())));
+                .selectList(new QueryWrapper<Reply>().eq("user_id", activeUser.getId())));
     }
 
     @GetMapping("apply")
@@ -123,7 +123,7 @@ public class ReplyController {
         if(commission.isDead()) {
             return ResultObj.Permission_Exceed.addOther("该委托已结束");
         }
-        if (!commission.getAccount().equals(activeUser.getAccount()) || entity.getState() > 0) {
+        if (commission.getUserId() != activeUser.getId() || entity.getState() > 0) {
             return ResultObj.Permission_Exceed;
         }
         return replyService.apply(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;
@@ -137,7 +137,7 @@ public class ReplyController {
         if(commission.isDead()) {
             return ResultObj.Permission_Exceed.addOther("该委托已结束");
         }
-        if (!commission.getAccount().equals(activeUser.getAccount()) || entity.getState() > 0) {
+        if (commission.getUserId() != activeUser.getId() || entity.getState() > 0) {
             return ResultObj.Permission_Exceed;
         }
         return replyService.reject(replyId) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;

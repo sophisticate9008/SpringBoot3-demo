@@ -35,9 +35,9 @@ public class Commission implements Serializable {
     @Hidden
     private Integer id;
 
-    @Schema(name = "account", description = "委托者账号")
-    @TableField("account")
-    private String account;
+    @Schema(name = "userId", description = "委托者id")
+    @TableField("user_id")
+    private Integer userId;
 
     @Schema(name = "name", description = "委托名称")
     @TableField("name")

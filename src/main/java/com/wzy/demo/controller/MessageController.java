@@ -41,26 +41,26 @@ public class MessageController {
     
     @Operation(summary = "获取所有消息", description = "获取所有消息")
     public DataGridView loadAll() {
-        return new DataGridView(messageService.getAllList(activeUser.getAccount()));
+        return new DataGridView(messageService.getAllList(activeUser.getId()));
     }
     
     @GetMapping("initUuid")
     public ResultObj initUuid(String uuid) {
 
-        redisService.setValue(uuid, activeUser.getAccount());
-        redisService.setValue("uuid" + activeUser.getAccount(), uuid);
+        redisService.setValue(uuid, activeUser.getId());
+        redisService.setValue("uuid" + activeUser.getId(), uuid);
         return ResultObj.OPERATION_SUCCESS;
     }
 
     @GetMapping("changeObserve")
-    public void changeObserve(String theObserved) {
-        redisService.setValue(Constast.MESSAGE_FLAG + activeUser.getAccount(), theObserved);
-        messageService.readMessage(theObserved, activeUser.getAccount());
+    public void changeObserve(Integer theObserved) {
+        redisService.setValue(Constast.MESSAGE_FLAG + activeUser.getId(), theObserved);
+        messageService.readMessage(theObserved, activeUser.getId());
     }
 
     @GetMapping("unObserve")
     public void unObserve() {
-        redisService.deleteValue(Constast.MESSAGE_FLAG + activeUser.getAccount());
+        redisService.deleteValue(Constast.MESSAGE_FLAG + activeUser.getId());
     }
     
 }

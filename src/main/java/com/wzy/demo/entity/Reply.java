@@ -38,9 +38,9 @@ public class Reply implements Serializable {
     @TableField("content")
     private String content;
 
-    @Schema(name = "account", description = "回答者账号")
-    @TableField("account")
-    private String account;
+    @Schema(name = "userId", description = "回答者id")
+    @TableField("user_id")
+    private Integer userId;
 
     @Schema(name = "commissionId", description = "回答所属的委托id")
     @TableField("commission_id")

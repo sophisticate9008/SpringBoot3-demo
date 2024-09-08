@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-06-11
  */
 public interface ReplyService extends IService<Reply> {
-    boolean canceled(String account, Integer replyId);
+    boolean canceled(Integer userId, Integer replyId);
     boolean add(Reply reply);
 
     boolean unlock(Integer replyId);

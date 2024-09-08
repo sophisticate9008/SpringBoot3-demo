@@ -17,38 +17,26 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author wzy
- * @since 2024-08-15
+ * @since 2024-09-08
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("message")
-@Schema(name = "Message", description = "")
-public class Message implements Serializable {
+@TableName("bell")
+@Schema(name = "Bell", description = "")
+public class Bell implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Schema(name = "id", description = "")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @Schema(name = "content", description = "")
+    @TableField("user_id")
+    private Integer userId;
+
     @TableField("content")
     private String content;
 
-    @Schema(name = "senderId", description = "发送者id")
-    @TableField("sender_id")
-    private Integer senderId;
-
-    @Schema(name = "receiverId", description = "接收者id")
-    @TableField("receiver_id")
-    private Integer receiverId;
-
-    @Schema(name = "haveRead", description = "")
-    @TableField("haveRead")
-    private Boolean haveRead;
-
-    @Schema(name = "sendTime", description = "")
-    @TableField("send_time")
-    private LocalDateTime sendTime;
+    @TableField("created_at")
+    private LocalDateTime createdAt;
 }

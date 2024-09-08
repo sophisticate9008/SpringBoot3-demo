@@ -25,24 +25,24 @@ import org.springframework.stereotype.Service;
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {
 
     @Override
-    public List<Message> getListByUser(String sender, String receiver) {
+    public List<Message> getListByUser(Integer sender, Integer receiver) {
         QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("sender", sender).eq("receiver", receiver).or().eq("sender", receiver).eq("receiver", sender);
         return this.list(queryWrapper);
     }
 
     @Override
-    public Map<String, List<Message>> getAllList(String sender) {
+    public Map<Integer, List<Message>> getAllList(Integer senderId) {
         QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("sender", sender).or().eq("receiver", sender);
+        queryWrapper.eq("sender_id", senderId).or().eq("receiver_id", senderId);
         List<Message> messages = this.baseMapper.selectList(queryWrapper);
-        Map<String, List<Message>> groupedMessages = messages.stream()
+        Map<Integer, List<Message>> groupedMessages = messages.stream()
                 .collect(Collectors.groupingBy(message -> {
                     // 分组的 key 是对方的标识，即对方的用户名
-                    if (message.getSender().equals(sender)) {
-                        return message.getReceiver();
+                    if (message.getSenderId() == senderId) {
+                        return message.getReceiverId();
                     } else {
-                        return message.getSender();
+                        return message.getSenderId();
                     }
                 }));
         return groupedMessages.entrySet().stream()
@@ -61,11 +61,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public void readMessage(String sender, String receiver) {
+    public void readMessage(Integer senderId, Integer receiverId) {
         // 创建查询条件
         QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("sender", sender)
-                .eq("receiver", receiver)
+        queryWrapper.eq("sender_id", senderId)
+                .eq("receiver_id", receiverId)
                 .orderByDesc("id").last("LIMIT 1");
         ;
 

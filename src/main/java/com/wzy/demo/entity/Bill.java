@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -17,38 +18,29 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author wzy
- * @since 2024-08-15
+ * @since 2024-09-08
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("message")
-@Schema(name = "Message", description = "")
-public class Message implements Serializable {
+@TableName("bill")
+@Schema(name = "Bill", description = "")
+public class Bill implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Schema(name = "id", description = "")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @Schema(name = "content", description = "")
+    @TableField("user_id")
+    private Integer userId;
+
     @TableField("content")
     private String content;
 
-    @Schema(name = "senderId", description = "发送者id")
-    @TableField("sender_id")
-    private Integer senderId;
+    @TableField("created_at")
+    private LocalDateTime createdAt;
 
-    @Schema(name = "receiverId", description = "接收者id")
-    @TableField("receiver_id")
-    private Integer receiverId;
-
-    @Schema(name = "haveRead", description = "")
-    @TableField("haveRead")
-    private Boolean haveRead;
-
-    @Schema(name = "sendTime", description = "")
-    @TableField("send_time")
-    private LocalDateTime sendTime;
+    @TableField("gold")
+    private BigDecimal gold;
 }

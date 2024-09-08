@@ -28,9 +28,9 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
     private CommissionService commissionService;
 
     @Override
-    public boolean canceled(String account, Integer commissionId) {
+    public boolean canceled(Integer userId, Integer commissionId) {
         QueryWrapper<Reply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("account", account).eq("commission_id", commissionId).eq("state", -2);
+        queryWrapper.eq("user_id", userId).eq("commission_id", commissionId).eq("state", -2);
         if (this.list(queryWrapper).size() > 0) {
             return true;
         } else {
@@ -40,7 +40,7 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
 
     @Override
     public boolean add(Reply reply) {
-        if (this.canceled(reply.getAccount(), reply.getCommissionId())) {
+        if (this.canceled(reply.getUserId(), reply.getCommissionId())) {
             return false;
         } else {
             Commission commission = commissionService.getById(reply.getCommissionId());

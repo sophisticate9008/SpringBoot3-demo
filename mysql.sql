@@ -47,7 +47,7 @@ CREATE TABLE role_permission (
 
 CREATE TABLE commission (
     id INT NOT NULL AUTO_INCREMENT,
-    account VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description Text,
     begin_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -57,29 +57,66 @@ CREATE TABLE commission (
     num INT NOT NULL,
     current_num INT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
-    FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE reply(
     id INT NOT NULL AUTO_INCREMENT,
     content Text,
-    account VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
     commission_id INT NOT NULL,
     reply_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     state TINYINT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (account) REFERENCES user(account) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (commission_id) REFERENCES commission(id) ON DELETE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE Message(
+CREATE TABLE Message (
     id INT NOT NULL AUTO_INCREMENT,
-    content varchar(2000),
-    sender varchar(255),
-    receiver varchar(255),
+    content VARCHAR(2000),
+    sender_id INT,
+    receiver_id INT,
     haveRead BOOLEAN DEFAULT FALSE,
     send_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
-    FOREIGN KEY(sender) REFERENCES user(account) ON DELETE CASCADE,
-    FOREIGN KEY(receiver) REFERENCES user(account) ON DELETE CASCADE
+    FOREIGN KEY(sender_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY(receiver_id) REFERENCES user(id) ON DELETE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE subscribe(
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    commission_id INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY(commission_id) REFERENCES commission(id) ON DELETE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE bell(
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE bill(
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    gold DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE balance(
+    user_id INT NOT NULL,
+    gold DECIMAL(10,2) NOT NULL DEFAULT 0,
+    state TINYINT NOT NULL DEFAULT 1,
+    PRIMARY KEY(user_id),
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
