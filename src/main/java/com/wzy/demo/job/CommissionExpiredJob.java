@@ -17,11 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wzy.demo.common.RedisService;
 import com.wzy.demo.entity.Balance;
 import com.wzy.demo.entity.Bell;
+import com.wzy.demo.entity.Bill;
 import com.wzy.demo.entity.Commission;
 import com.wzy.demo.entity.Reply;
 import com.wzy.demo.entity.Subscribe;
 import com.wzy.demo.service.BalanceService;
 import com.wzy.demo.service.BellService;
+import com.wzy.demo.service.BillService;
 import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.service.SubscribeService;
 import com.wzy.demo.service.UserService;
@@ -45,7 +47,7 @@ public class CommissionExpiredJob implements Job {
     @Autowired
     private BalanceService balanceService;
     @Autowired
-    private UserService userService;
+    private BillService billService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -101,12 +103,14 @@ public class CommissionExpiredJob implements Job {
             balanceService.add(userId, totalGold); // 增加用户余额
             String msg = "您完成了委托:" + commission.getName() + "  " + replyCount + "份，获得金额：" + totalGold;
             bellService.add(userId, msg); // 记录分配信息
+            billService.add(userId, msg, totalGold);
             messages.put(userId, msg);
         }
 
         balanceService.add(commission.getUserId(), perGold);
-        String msg = "剩余金额份数" + numRest + "返还金额" + perGold.multiply(BigDecimal.valueOf(numRest));
+        String msg = "您的委托:" + commission.getName() + "剩余金额份数" + numRest + "返还金额" + perGold.multiply(BigDecimal.valueOf(numRest));
         bellService.add(commission.getUserId(),msg);
+        billService.add(commission.getUserId(), msg, perGold.multiply(BigDecimal.valueOf(numRest)));
         messages.put(commission.getUserId(), msg);
         sendMessage(messages);
     }
