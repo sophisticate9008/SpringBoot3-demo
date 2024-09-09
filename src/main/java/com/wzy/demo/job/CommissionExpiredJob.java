@@ -39,22 +39,18 @@ public class CommissionExpiredJob implements Job {
     @Autowired
     private SubscribeService subscribeService;
     @Autowired
-    private BellService bellService;
-    @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private BalanceService balanceService;
-    @Autowired
-    private BillService billService;
+
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         int commissionId = dataMap.getInt("commissionId");
         deleteSubscribe(commissionId);
-        allocate(commissionId);
+        Map<Integer,String> res = commissionService.allocate(commissionId);
+        sendMessage(res);
     }
 
     public void deleteSubscribe(Integer commissionId) {
@@ -80,38 +76,4 @@ public class CommissionExpiredJob implements Job {
         }
     }
 
-    @Transactional
-    public void allocate(Integer commissionId) {
-        // 获取所有订阅者
-        // 获取委托
-        Commission commission = commissionService.getById(commissionId);
-        // 获取所有采取的回答
-        List<Reply> replyListApply = commissionService.getApplyReplys(commissionId);
-        BigDecimal perGold = commission.getMoney();
-        Integer numRest = commission.getNum() - commission.getCurrentNum();
-        Map<Integer, Integer> userReplyCountMap = new HashMap<>();
-        Map<Integer, String> messages = new HashMap<>();
-        for (Reply reply : replyListApply) {
-            Integer userId = reply.getUserId(); // 假设 Reply 中有 getUserId 方法
-            userReplyCountMap.put(userId, userReplyCountMap.getOrDefault(userId, 0) + 1);
-        }
-        // 分配金额给每个用户
-        for (Map.Entry<Integer, Integer> entry : userReplyCountMap.entrySet()) {
-            Integer userId = entry.getKey();
-            Integer replyCount = entry.getValue();
-            BigDecimal totalGold = perGold.multiply(BigDecimal.valueOf(replyCount)); // 计算用户总共获得的金额
-            balanceService.add(userId, totalGold); // 增加用户余额
-            String msg = "您完成了委托:" + commission.getName() + "  " + replyCount + "份，获得金额：" + totalGold;
-            bellService.add(userId, msg); // 记录分配信息
-            billService.add(userId, msg, totalGold);
-            messages.put(userId, msg);
-        }
-
-        balanceService.add(commission.getUserId(), perGold);
-        String msg = "您的委托:" + commission.getName() + "剩余金额份数" + numRest + "返还金额" + perGold.multiply(BigDecimal.valueOf(numRest));
-        bellService.add(commission.getUserId(),msg);
-        billService.add(commission.getUserId(), msg, perGold.multiply(BigDecimal.valueOf(numRest)));
-        messages.put(commission.getUserId(), msg);
-        sendMessage(messages);
-    }
 }

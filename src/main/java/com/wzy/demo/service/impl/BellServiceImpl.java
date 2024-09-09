@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class BellServiceImpl extends ServiceImpl<BellMapper, Bell> implements BellService {
 
-    @Autowired
-    private BellService bellService;
     @Override
     public List<Bell> getByUserId(Integer userId) {
         QueryWrapper<Bell> queryWrapper = new QueryWrapper<>();
@@ -36,7 +34,7 @@ public class BellServiceImpl extends ServiceImpl<BellMapper, Bell> implements Be
     public boolean add(Integer userId, String content) {
         Bell bell = new Bell();
         bell.setUserId(userId).setContent(content);
-        return bellService.save(bell);
+        return this.save(bell);
     }
 
 
@@ -44,7 +42,7 @@ public class BellServiceImpl extends ServiceImpl<BellMapper, Bell> implements Be
 
     @Override
     public boolean remove(Integer[] ids) {
-        return bellService.removeById(ids);
+        return this.removeById(ids);
     }
 
 }

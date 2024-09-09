@@ -1,5 +1,6 @@
 package com.wzy.demo.service.impl;
 
+import com.wzy.demo.common.MyException;
 import com.wzy.demo.entity.Balance;
 import com.wzy.demo.mapper.BalanceMapper;
 import com.wzy.demo.service.BalanceService;
@@ -24,7 +25,8 @@ public class BalanceServiceImpl extends ServiceImpl<BalanceMapper, Balance> impl
     public boolean add(Integer userId, BigDecimal gold) {
         Balance balance = this.get(userId);
         balance.setGold(balance.getGold().add(gold));
-        return this.updateById(balance);
+        return MyException.throwRuntimeException(this.updateById(balance),  "添加余额失败,user_id:" + userId + ", gold:" + gold);
+        
     }
     
     @Override
@@ -44,7 +46,8 @@ public class BalanceServiceImpl extends ServiceImpl<BalanceMapper, Balance> impl
     public boolean reduce(Integer userId, BigDecimal gold) {
         Balance balance = this.get(userId);
         balance.setGold(balance.getGold().subtract(gold));
-        return this.updateById(balance);
+        return MyException.throwRuntimeException(this.updateById(balance),  "减少余额失败,user_id:" + userId + ", gold:" + gold);
     }
+
 
 }

@@ -11,11 +11,14 @@ import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.entity.Commission;
 import com.wzy.demo.entity.User;
+import com.wzy.demo.service.BellService;
+import com.wzy.demo.service.BillService;
 import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.vo.PageVo;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +44,10 @@ public class CommissionController {
     private User activeUser;
     @Autowired
     private CommissionService commissionService;
-
+    @Autowired
+    private BellService bellService;
+    @Autowired
+    private BillService billService;
     @PostMapping("add")
     @Transactional
     @Operation(summary = "添加委托", description = "添加委托")
@@ -54,6 +60,9 @@ public class CommissionController {
             }
             commission.setState(0);
             commission.setDescription(commissionService.htmlStringHandle(commission.getDescription()));
+            if(!checkAndConsumeGold(commission)) {
+                return ResultObj.ADD_ERROR.addOther("余额不足");
+            }
             if (commissionService.save(commission)) {
                 commissionService.setCommissionBeginJob(commission);
                 commissionService.setCommissionExpiredJob(commission);
@@ -68,12 +77,12 @@ public class CommissionController {
     }
 
     @PostMapping("update")
-    @Operation(summary = "修改委托", description = "修改委托(有锁定的不可修改,不可修改总金额)")
+    @Operation(summary = "修改委托", description = "修改委托(有锁定的不可修改,不可修改总金额,数量)")
     public ResultObj update(@RequestBody Commission commission) {
         Commission theCommission = commissionService.getById(commission.getId());
-        //不可修改总金额
+        //不可修改金额,数量
         commission.setMoney(theCommission.getMoney());
-        
+        commission.setNum(theCommission.getNum());
         if (theCommission.getUserId() == activeUser.getId()) {
             if (commissionService.locked(commission.getId())) {
                 return ResultObj.Permission_Exceed.addOther(",委托被锁定");
@@ -86,9 +95,9 @@ public class CommissionController {
         }
     }
 
-    @GetMapping("delete")
-    @Operation(summary = "删除委托", description = "删除委托(被锁定的得到截止时间才能删除)")
-    public ResultObj delete(Integer id) {
+    @GetMapping("stop")
+    @Operation(summary = "终止委托", description = "终止委托(被锁定的不可)")
+    public ResultObj stop(Integer id) {
 
         Commission commission = commissionService.getById(id);
         if (commission.getUserId() != activeUser.getId()) {
@@ -97,7 +106,8 @@ public class CommissionController {
         if (commissionService.locked(id)) {
             return ResultObj.Permission_Exceed.addOther(",委托被锁定");
         }
-        return commissionService.removeById(id) ? ResultObj.DELETE_SUCCESS : ResultObj.DELETE_ERROR;
+        commission.setState(-1);
+        return commissionService.updateById(commission) ? ResultObj.OPERATION_SUCCESS : ResultObj.OPERATION_ERROR;
     }
 
     @PostMapping("list")
@@ -117,4 +127,10 @@ public class CommissionController {
         return new DataGridView(commissionService.getById(id));
     }
 
+    public boolean checkAndConsumeGold(Commission commission) {
+        BigDecimal consumeGold = commission.getMoney().multiply(BigDecimal.valueOf(commission.getNum()));
+        billService.add(commission.getUserId(), "委托申请:" + commission.getName(), consumeGold);
+        bellService.add(commission.getUserId(), "委托申请:" + commission.getName() + consumeGold);
+        return true;
+    }
 }

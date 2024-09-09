@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-09-08
  */
 public interface BillService extends IService<Bill> {
-    public void add(Integer userId, String content, BigDecimal gold);
-    public void remove(Integer[] ids);
+    public boolean add(Integer userId, String content, BigDecimal gold);
+    public boolean reduce(Integer userId, String content, BigDecimal gold);
     public List<Bill> getByUserId(Integer UserId);
 }

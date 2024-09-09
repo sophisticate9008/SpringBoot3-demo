@@ -43,4 +43,7 @@ public class Bill implements Serializable {
 
     @TableField("gold")
     private BigDecimal gold;
+
+    @TableField("type")
+    private Integer type;
 }

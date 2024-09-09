@@ -5,6 +5,7 @@ import com.wzy.demo.entity.Reply;
 
 
 import java.util.List;
+import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -26,4 +27,6 @@ public interface CommissionService extends IService<Commission> {
     void setCommissionBeginJob(Commission commission);
 
     List<Reply> getApplyReplys(Integer commissionId);
+
+    Map<Integer,String> allocate(Integer commissionId);
 }
