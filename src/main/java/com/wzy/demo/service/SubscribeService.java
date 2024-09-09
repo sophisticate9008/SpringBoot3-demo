@@ -16,7 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SubscribeService extends IService<Subscribe> {
     public boolean add(Integer userId,Integer commissionId);
-    public boolean remove(Integer id);
     public List<Subscribe> getByUserId(Integer userId);
     public List<Subscribe> getByCommissionId(Integer commissionId);
 }

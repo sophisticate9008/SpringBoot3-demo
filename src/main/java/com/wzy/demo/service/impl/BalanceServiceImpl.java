@@ -34,7 +34,7 @@ public class BalanceServiceImpl extends ServiceImpl<BalanceMapper, Balance> impl
         Balance balance = this.getById(userId);
         if(balance == null) {
             balance = new Balance();
-            balance.setUserId(userId);
+            balance.setUserId(userId).setGold(BigDecimal.valueOf(0));
             this.save(balance);
             return balance;
         }else {

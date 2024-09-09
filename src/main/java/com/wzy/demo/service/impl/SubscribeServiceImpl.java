@@ -22,26 +22,17 @@ public class SubscribeServiceImpl extends ServiceImpl<SubscribeMapper, Subscribe
 
     @Override
     public boolean add(Integer userId, Integer commissionId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
-    }
-
-    @Override
-    public boolean remove(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        return this.save(new Subscribe().setUserId(userId).setCommissionId(commissionId));
     }
 
     @Override
     public List<Subscribe> getByUserId(Integer userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByUserId'");
+        return this.lambdaQuery().eq(Subscribe::getUserId, userId).list();
     }
 
     @Override
     public List<Subscribe> getByCommissionId(Integer commissionId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByCommissionId'");
+        return this.lambdaQuery().eq(Subscribe::getCommissionId, commissionId).list();
     }
 
 }

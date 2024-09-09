@@ -55,9 +55,7 @@ public class CommissionExpiredJob implements Job {
 
     public void deleteSubscribe(Integer commissionId) {
         List<Subscribe> list = subscribeService.getByCommissionId(commissionId);
-        for (Subscribe subscribe : list) {
-            subscribeService.remove(subscribe.getId());
-        }
+        subscribeService.removeByIds(list);
         String logContent = String.format("委托:%d结束,删除订阅", commissionId);
         log.debug(logContent);
     }

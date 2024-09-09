@@ -47,7 +47,7 @@ public class MessageController {
     @GetMapping("initUuid")
     public ResultObj initUuid(String uuid) {
 
-        redisService.setValue(uuid, activeUser.getId());
+        redisService.setValue(uuid, activeUser.getId().toString());
         redisService.setValue("uuid" + activeUser.getId(), uuid);
         return ResultObj.OPERATION_SUCCESS;
     }

@@ -52,13 +52,9 @@ public class SubscribeController {
     }
     @GetMapping("remove")
     @Operation(summary = "删除订阅", description = "删除订阅")
-    public ResultObj remove(@RequestParam Integer[] ids) {
+    public ResultObj remove(@RequestBody List<Integer> ids) {
         List<Integer> successList = new ArrayList<>();
-        for (Integer id : ids) {
-            if(subscribeService.remove(id)) {
-                successList.add(id);
-            };
-        }
+        subscribeService.removeByIds(ids);
         return ResultObj.DELETE_SUCCESS.addOther("删除成功" + successList.toString());
     }
 
