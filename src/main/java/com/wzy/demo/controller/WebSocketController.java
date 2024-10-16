@@ -46,7 +46,7 @@ public class WebSocketController {
             MessageVo messageVo = objectMapper.readValue(message, MessageVo.class);
             //判断是否是本人发起的消息
             if (redisService.getValue(uuid) == null
-                    || ((Integer) redisService.getValue(uuid)) != messageVo.getSenderId()) {
+                    || Integer.parseInt((String)redisService.getValue(uuid) ) != messageVo.getSenderId()) {
                 return;
             }
             messageVo.setSendTime(LocalDateTime.now());
@@ -60,7 +60,7 @@ public class WebSocketController {
                     "/topic/messages/" + redisService.getValue("uuid" + messageVo.getReceiverId()), messageStr);
             messagingTemplate.convertAndSend("/topic/messages/" + redisService.getValue("uuid" + messageVo.getSenderId()), messageStr);
         } catch (Exception e) {
-            log.error("发送消息失败", e);
+            log.error("send error", e);
         }
 
     }

@@ -94,12 +94,15 @@ public class UserController {
     }
     
     @PostMapping("basicInfos")
-    @Operation(summary = "获取用户基本信息", description = "获取用户基本信息,传入Accounts")
+    @Operation(summary = "获取用户基本信息", description = "获取用户基本信息,传入userIds")
     public DataGridView basicInfos(@RequestBody MultiGetVo multiGetVo) {
         ArrayList<User> users = new ArrayList<>();
-        for (String account : multiGetVo.getAccounts()) {
+        if(multiGetVo.getIds() == null) {
+            return new DataGridView();
+        }
+        for (int id : multiGetVo.getIds()) {
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("account", account);
+            queryWrapper.eq("id", id);
             User user = userService.getOne(queryWrapper);
             user.setPassword(null).setSalt(null).setPhone(null).setEmail(null);
             users.add(user);

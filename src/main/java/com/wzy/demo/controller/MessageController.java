@@ -54,7 +54,7 @@ public class MessageController {
 
     @GetMapping("changeObserve")
     public void changeObserve(Integer theObserved) {
-        redisService.setValue(Constast.MESSAGE_FLAG + activeUser.getId(), theObserved);
+        redisService.setValue(Constast.MESSAGE_FLAG + activeUser.getId(), theObserved.toString());
         messageService.readMessage(theObserved, activeUser.getId());
     }
 

@@ -3,7 +3,6 @@ package com.wzy.demo.service;
 import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.entity.User;
 
-import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
