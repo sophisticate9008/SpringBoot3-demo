@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wzy.demo.common.ActiverUser;
+import com.wzy.demo.common.ActiveUser;
 
 import com.wzy.demo.common.JwtToken;
 import com.wzy.demo.common.JwtUtils;
@@ -76,9 +76,9 @@ public class JwtRealm extends AuthorizingRealm {
         if (user == null) {
             throw new AuthenticationException("用户不存在");
         }
-        // 构建 ActiverUser 对象
-        ActiverUser activerUser = new ActiverUser();
-        activerUser.setUser(user);
+        // 构建 ActiveUser 对象
+        ActiveUser activeUser = new ActiveUser();
+        activeUser.setUser(user);
 
         List<String> roles = new ArrayList<>();
         List<String> permissions = new ArrayList<>();
@@ -100,18 +100,18 @@ public class JwtRealm extends AuthorizingRealm {
             }
         }
 
-        activerUser.setRoles(roles);
-        activerUser.setPermissions(permissions);
+        activeUser.setRoles(roles);
+        activeUser.setPermissions(permissions);
 
-        return new SimpleAuthenticationInfo(activerUser, token, getName());
+        return new SimpleAuthenticationInfo(activeUser, token, getName());
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        ActiverUser activerUser = (ActiverUser) principalCollection.getPrimaryPrincipal();
-        authorizationInfo.addRoles(activerUser.getRoles());
-        authorizationInfo.addStringPermissions(activerUser.getPermissions());
+        ActiveUser activeUser = (ActiveUser) principalCollection.getPrimaryPrincipal();
+        authorizationInfo.addRoles(activeUser.getRoles());
+        authorizationInfo.addStringPermissions(activeUser.getPermissions());
         return authorizationInfo;
     }
 }

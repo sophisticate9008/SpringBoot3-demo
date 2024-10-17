@@ -18,4 +18,7 @@ public interface SubscribeService extends IService<Subscribe> {
     public boolean add(Integer userId,Integer commissionId);
     public List<Subscribe> getByUserId(Integer userId);
     public List<Subscribe> getByCommissionId(Integer commissionId);
+    public boolean isSubscribed(Integer userId,Integer commissionId);
+    public boolean removeByCommissionIds(Integer userId,List<Integer> commissionIds);
+
 }

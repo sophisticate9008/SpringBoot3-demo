@@ -17,7 +17,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface BellService extends IService<Bell> {
     public List<Bell> getByUserId(Integer userId);
     public boolean add(Integer userId, String content);
-    public boolean remove(Integer[] ids);
-
 
 }

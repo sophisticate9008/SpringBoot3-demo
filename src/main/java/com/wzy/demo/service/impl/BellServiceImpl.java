@@ -38,11 +38,4 @@ public class BellServiceImpl extends ServiceImpl<BellMapper, Bell> implements Be
     }
 
 
-
-
-    @Override
-    public boolean remove(Integer[] ids) {
-        return this.removeById(ids);
-    }
-
 }

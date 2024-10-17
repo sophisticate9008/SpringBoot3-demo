@@ -8,7 +8,7 @@ import com.wzy.demo.entity.User;
 import lombok.Data;
 
 @Data
-public class ActiverUser {
+public class ActiveUser {
     User user;
     List<String> permissions;
     List<String> roles;

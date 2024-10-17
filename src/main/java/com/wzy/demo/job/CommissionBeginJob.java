@@ -17,7 +17,7 @@ import com.wzy.demo.entity.Subscribe;
 import com.wzy.demo.service.BellService;
 import com.wzy.demo.service.CommissionService;
 import com.wzy.demo.service.SubscribeService;
-import com.wzy.demo.service.UserService;
+
 
 @Component
 public class CommissionBeginJob implements Job {

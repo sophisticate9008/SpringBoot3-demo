@@ -17,7 +17,7 @@ import com.wzy.demo.common.ResultObj;
 import com.wzy.demo.common.WebUtils;
 import com.wzy.demo.entity.User;
 import com.wzy.demo.service.UserService;
-import com.wzy.demo.vo.MultiGetVo;
+import com.wzy.demo.vo.MultiVo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -95,12 +95,12 @@ public class UserController {
     
     @PostMapping("basicInfos")
     @Operation(summary = "获取用户基本信息", description = "获取用户基本信息,传入userIds")
-    public DataGridView basicInfos(@RequestBody MultiGetVo multiGetVo) {
+    public DataGridView basicInfos(@RequestBody MultiVo multiVo) {
         ArrayList<User> users = new ArrayList<>();
-        if(multiGetVo.getIds() == null) {
+        if(multiVo.getIds() == null) {
             return new DataGridView();
         }
-        for (int id : multiGetVo.getIds()) {
+        for (int id : multiVo.getIds()) {
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", id);
             User user = userService.getOne(queryWrapper);

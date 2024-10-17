@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wzy.demo.common.ActiverUser;
+import com.wzy.demo.common.ActiveUser;
 
 import com.wzy.demo.common.JwtUtils;
 import com.wzy.demo.common.ResultObj;
@@ -46,9 +46,9 @@ public class LoginController {
                 subject.login(token);
                 String jwToken = JwtUtils.genAccessToken(account);
                 // 通过subject获取以认证活动的user
-                ActiverUser activerUser = (ActiverUser) subject.getPrincipal();
+                ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
                 // 将user存储到session中
-                WebUtils.getSession().setAttribute("user", activerUser.getUser());
+                WebUtils.getSession().setAttribute("user", activeUser.getUser());
                 return ResultObj.LOGIN_SUCCESS.putArgs("jwtToken", jwToken);
             } catch (AuthenticationException e) {
                 e.printStackTrace();
@@ -78,8 +78,8 @@ public class LoginController {
         if(!subject.isAuthenticated()) {
             return ResultObj.LOGIN_ERROR;
         }else {
-            ActiverUser activerUser = (ActiverUser) subject.getPrincipal();
-            WebUtils.getSession().setAttribute("user", activerUser.getUser());
+            ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+            WebUtils.getSession().setAttribute("user", activeUser.getUser());
             return ResultObj.LOGIN_SUCCESS;
         }
         

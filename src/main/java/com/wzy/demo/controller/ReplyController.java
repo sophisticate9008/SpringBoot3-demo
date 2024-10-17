@@ -3,12 +3,13 @@ package com.wzy.demo.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wzy.demo.annotation.InjectUser;
 import com.wzy.demo.common.DataGridView;
 import com.wzy.demo.common.ResultObj;
-import com.wzy.demo.common.WebUtils;
+
 import com.wzy.demo.entity.Commission;
 import com.wzy.demo.entity.Reply;
 import com.wzy.demo.entity.User;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @since 2024-06-11
  */
 @InjectUser
-@Controller
+@RestController
 @RequestMapping("/reply")
 @ResponseBody
 public class ReplyController {

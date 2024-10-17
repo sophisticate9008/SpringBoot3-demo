@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wzy.demo.common.ActiverUser;
+import com.wzy.demo.common.ActiveUser;
 import com.wzy.demo.common.Constast;
 import com.wzy.demo.entity.Permission;
 import com.wzy.demo.entity.Role;
@@ -63,8 +63,8 @@ public class UserRealm extends AuthorizingRealm {
         User user = userService.getOne(queryWrapper);
         SecurityUtils.getSubject().getSession().setAttribute("user", user);
         if (null!=user){
-            ActiverUser activerUser = new ActiverUser();
-            activerUser.setUser(user);
+            ActiveUser activeUser = new ActiveUser();
+            activeUser.setUser(user);
             
             List<String> roles = new ArrayList<>();
             List<String> permissions = new ArrayList<>();
@@ -82,12 +82,12 @@ public class UserRealm extends AuthorizingRealm {
                         .stream().map(Permission::getPermissionName).collect(Collectors.toList());                    
                 }
             }
-            activerUser.setRoles(roles);
-            activerUser.setPermissions(permissions);
+            activeUser.setRoles(roles);
+            activeUser.setPermissions(permissions);
             //生成盐
             
             ByteSource credentialsSalt=ByteSource.Util.bytes(user.getSalt());
-            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(activerUser,user.getPassword(),credentialsSalt,this.getName());
+            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(activeUser,user.getPassword(),credentialsSalt,this.getName());
             return info;
         }
         return null;
@@ -97,12 +97,12 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        ActiverUser activerUser = (ActiverUser) principalCollection.getPrimaryPrincipal();
-        User user = activerUser.getUser();
-        authorizationInfo.addRoles(activerUser.getRoles());
+        ActiveUser activeUser = (ActiveUser) principalCollection.getPrimaryPrincipal();
+        User user = activeUser.getUser();
+        authorizationInfo.addRoles(activeUser.getRoles());
         List<String> superPermission = new ArrayList<>();
         superPermission.add("*:*");
-        List<String> permissions = activerUser.getPermissions();
+        List<String> permissions = activeUser.getPermissions();
         if (user.getTheType().equals(Constast.USER_TYPE_SUPER)){
             authorizationInfo.addStringPermissions(superPermission);
 
